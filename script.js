@@ -1,6 +1,9 @@
 let actions = 0;
 let startTime;
 let interval;
+let draggedItem = null;
+let draggedFrom = null;
+let isDragging = false;
 let initialTouchX, initialTouchY;
 
 const board = document.querySelector('.board');
@@ -39,8 +42,6 @@ function generateCards() {
 }
 
 function setupDragAndDrop() {
-    let draggedItem = null;
-    let draggedFrom = null;
 
     board.addEventListener('dragover', preventDefault);
     board.addEventListener('drop', handleBoardDrop);
@@ -53,6 +54,8 @@ function setupDragAndDrop() {
     document.addEventListener('touchstart', handleTouchStart, { passive: false });
     document.addEventListener('touchmove', preventDefault, { passive: false });
     document.addEventListener('touchend', handleTouchEnd, { passive: false });
+    board.addEventListener('touchmove', handleTouchMove, { passive: false });
+
 }
 
 function preventDefault(e) {
@@ -82,6 +85,21 @@ function handleBoardDrop(e) {
     }
 }
 
+function handleTouchMove(e) {
+    console.log('Touch move triggered');
+    if (!isDragging) return;
+
+    const touchX = e.touches[0].clientX;
+    const touchY = e.touches[0].clientY;
+
+    // Calculate the distance moved
+    const dx = touchX - initialTouchX;
+    const dy = touchY - initialTouchY;
+
+    // Move the dragged item
+    draggedItem.style.transform = `translate(${dx}px, ${dy}px)`;
+}
+
 function handleDragStart(e) {
     if (e.target.classList.contains('card')) {
         draggedItem = e.target;
@@ -99,40 +117,37 @@ function handleDragEnd(e) {
 }
 
 function handleTouchStart(e) {
+    e.preventDefault(); // Explicitly Prevents Default Behavior for touchstart
+    console.log('Touch start triggered');
     if (e.target.classList.contains('card')) {
+        e.preventDefault();
+
         draggedItem = e.target;
         draggedFrom = e.target.parentElement;
-        draggedItem.classList.add('is-dragging');
 
-        draggedItem.dataset.touchX = e.touches[0].clientX;
-        draggedItem.dataset.touchY = e.touches[0].clientY;
+        isDragging = true;
+
+        initialTouchX = e.touches[0].clientX;
+        initialTouchY = e.touches[0].clientY;
     }
 }
 
 function handleTouchEnd(e) {
-    if (!draggedItem) return; // Add this line to return early if draggedItem doesn't exist
+    console.log('Touch end triggered');
+    if (!isDragging || !draggedItem) return;
 
-    const touchX = parseFloat(draggedItem.dataset.touchX);
-    const touchY = parseFloat(draggedItem.dataset.touchY);
+    draggedItem.style.transform = ''; // Reset the transform
+    isDragging = false;
 
-    const distanceX = touchX - e.changedTouches[0].clientX;
-    const distanceY = touchY - e.changedTouches[0].clientY;
-
-    if (Math.abs(distanceX) > 30 || Math.abs(distanceY) > 30) {
-        if (draggedFrom === board) {
-            handleBoardDrop(e);
-        } else {
-            handleDropToSide(e);
-        }
+    // Now determine if the dragged item was released over any of the drop targets
+    const dropTarget = document.elementFromPoint(e.changedTouches[0].clientX, e.changedTouches[0].clientY);
+    
+    if (dropTarget.classList.contains('placeholder')) {
+        handleBoardDrop(e);
+    } else if (dropTarget === left || dropTarget === right || dropTarget.closest('.unshuffled')) {
+        handleDropToSide(e);
     }
-
-    draggedItem.classList.remove('is-dragging');
-    delete draggedItem.dataset.touchX;
-    delete draggedItem.dataset.touchY;
-    draggedItem = null;
-    draggedFrom = null;
 }
-
 
 function handleDropToSide(e) {
     e.preventDefault();
