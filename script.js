@@ -1,10 +1,15 @@
 let actions = 0;
 let startTime;
 let interval;
+let initialTouchX, initialTouchY;
 
 const board = document.querySelector('.board');
 const left = document.querySelector('.unshuffled.left');
 const right = document.querySelector('.unshuffled.right');
+
+generateCards();
+setupDragAndDrop();
+startTimer();
 
 function generateCards() {
     let positions = [
@@ -37,52 +42,97 @@ function setupDragAndDrop() {
     let draggedItem = null;
     let draggedFrom = null;
 
-    board.addEventListener('dragover', (e) => {
-        e.preventDefault();
-    });
-
-    board.addEventListener('drop', (e) => {
-        e.preventDefault();
-        if (draggedItem && e.target.classList.contains('placeholder')) {
-            actions++;
-            document.getElementById('actions').innerText = actions;
-
-            const target = e.target;
-            target.classList.remove('placeholder');
-            target.classList.add('card');
-            target.style.backgroundImage = "url('images/image.jpg')";
-            target.style.backgroundPosition = draggedItem.style.backgroundPosition;
-            target.setAttribute('data-id', draggedItem.getAttribute('data-id'));
-
-            draggedItem.style.backgroundPosition = 'center';
-            draggedItem.removeAttribute('data-id');
-            draggedItem.style.backgroundImage = "none";
-            draggedItem.classList.remove('card');
-            draggedItem.classList.add('placeholder');
-
-            checkCompletion();
-        }
-    });
-
-    document.addEventListener('dragstart', (e) => {
-        if (e.target.classList.contains('card')) {
-            draggedItem = e.target;
-            draggedFrom = e.target.parentElement;
-            draggedItem.classList.add('is-dragging');
-        }
-    });
-
-    document.addEventListener('dragend', (e) => {
-        if (draggedItem) {
-            draggedItem.classList.remove('is-dragging');
-            draggedItem = null;
-            draggedFrom = null;
-        }
-    });
-
+    board.addEventListener('dragover', preventDefault);
+    board.addEventListener('drop', handleBoardDrop);
+    document.addEventListener('dragstart', handleDragStart);
+    document.addEventListener('dragend', handleDragEnd);
     left.addEventListener('drop', handleDropToSide);
     right.addEventListener('drop', handleDropToSide);
+
+    // Mobile touch events
+    document.addEventListener('touchstart', handleTouchStart, { passive: false });
+    document.addEventListener('touchmove', preventDefault, { passive: false });
+    document.addEventListener('touchend', handleTouchEnd, { passive: false });
 }
+
+function preventDefault(e) {
+    e.preventDefault();
+}
+
+function handleBoardDrop(e) {
+    e.preventDefault();
+    if (draggedItem && e.target.classList.contains('placeholder')) {
+        actions++;
+        document.getElementById('actions').innerText = actions;
+
+        const target = e.target;
+        target.classList.remove('placeholder');
+        target.classList.add('card');
+        target.style.backgroundImage = "url('images/image.jpg')";
+        target.style.backgroundPosition = draggedItem.style.backgroundPosition;
+        target.setAttribute('data-id', draggedItem.getAttribute('data-id'));
+
+        draggedItem.style.backgroundPosition = 'center';
+        draggedItem.removeAttribute('data-id');
+        draggedItem.style.backgroundImage = "none";
+        draggedItem.classList.remove('card');
+        draggedItem.classList.add('placeholder');
+
+        checkCompletion();
+    }
+}
+
+function handleDragStart(e) {
+    if (e.target.classList.contains('card')) {
+        draggedItem = e.target;
+        draggedFrom = e.target.parentElement;
+        draggedItem.classList.add('is-dragging');
+    }
+}
+
+function handleDragEnd(e) {
+    if (draggedItem) {
+        draggedItem.classList.remove('is-dragging');
+        draggedItem = null;
+        draggedFrom = null;
+    }
+}
+
+function handleTouchStart(e) {
+    if (e.target.classList.contains('card')) {
+        draggedItem = e.target;
+        draggedFrom = e.target.parentElement;
+        draggedItem.classList.add('is-dragging');
+
+        draggedItem.dataset.touchX = e.touches[0].clientX;
+        draggedItem.dataset.touchY = e.touches[0].clientY;
+    }
+}
+
+function handleTouchEnd(e) {
+    if (!draggedItem) return; // Add this line to return early if draggedItem doesn't exist
+
+    const touchX = parseFloat(draggedItem.dataset.touchX);
+    const touchY = parseFloat(draggedItem.dataset.touchY);
+
+    const distanceX = touchX - e.changedTouches[0].clientX;
+    const distanceY = touchY - e.changedTouches[0].clientY;
+
+    if (Math.abs(distanceX) > 30 || Math.abs(distanceY) > 30) {
+        if (draggedFrom === board) {
+            handleBoardDrop(e);
+        } else {
+            handleDropToSide(e);
+        }
+    }
+
+    draggedItem.classList.remove('is-dragging');
+    delete draggedItem.dataset.touchX;
+    delete draggedItem.dataset.touchY;
+    draggedItem = null;
+    draggedFrom = null;
+}
+
 
 function handleDropToSide(e) {
     e.preventDefault();
@@ -136,7 +186,3 @@ function checkCompletion() {
         alert('Congratulations! You completed the puzzle.');
     }
 }
-
-generateCards();
-setupDragAndDrop();
-startTimer();
