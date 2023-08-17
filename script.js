@@ -45,48 +45,66 @@ function setupDragAndDrop() {
 
     board.addEventListener('dragover', preventDefault);
     board.addEventListener('drop', handleBoardDrop);
+    board.addEventListener('boarddrop', handleBoardDrop);  // Add this line here
     document.addEventListener('dragstart', handleDragStart);
     document.addEventListener('dragend', handleDragEnd);
     left.addEventListener('drop', handleDropToSide);
     right.addEventListener('drop', handleDropToSide);
 
-    // Mobile touch events
-    document.addEventListener('touchstart', handleTouchStart, { passive: false });
-    document.addEventListener('touchmove', preventDefault, { passive: false });
-    document.addEventListener('touchend', handleTouchEnd, { passive: false });
-    board.addEventListener('touchmove', handleTouchMove, { passive: false });
+    let cards = document.querySelectorAll('.card');
+    cards.forEach(card => {
+        card.addEventListener('touchstart', handleTouchStart, { passive: false });
+        card.addEventListener('touchmove', handleTouchMove, { passive: false });
+        card.addEventListener('touchend', handleTouchEnd, { passive: false });
+    });
 
 }
+
 
 function preventDefault(e) {
     e.preventDefault();
 }
 
+function handleDragEnd(e) {
+    if (draggedItem) {
+        draggedItem.classList.remove('is-dragging');
+        draggedItem = null;
+    }
+}
+
 function handleBoardDrop(e) {
     e.preventDefault();
-    if (draggedItem && e.target.classList.contains('placeholder')) {
+    
+    // determine the target based on event type
+    const target = e.type === 'boarddrop' ? e.detail.dropTarget : e.target;
+
+    if (draggedItem && target.classList.contains('placeholder')) {
         actions++;
         document.getElementById('actions').innerText = actions;
 
-        const target = e.target;
+        const dataId = draggedItem.getAttribute('data-id');
+        const bgPosition = draggedItem.style.backgroundPosition;
+
         target.classList.remove('placeholder');
         target.classList.add('card');
         target.style.backgroundImage = "url('images/image.jpg')";
-        target.style.backgroundPosition = draggedItem.style.backgroundPosition;
-        target.setAttribute('data-id', draggedItem.getAttribute('data-id'));
+        target.style.backgroundPosition = bgPosition;
+        target.setAttribute('data-id', dataId);
 
-        draggedItem.style.backgroundPosition = 'center';
         draggedItem.removeAttribute('data-id');
+        draggedItem.style.backgroundPosition = 'center';
         draggedItem.style.backgroundImage = "none";
         draggedItem.classList.remove('card');
         draggedItem.classList.add('placeholder');
+
+        draggedItem = null; // Reset dragged item
 
         checkCompletion();
     }
 }
 
 function handleTouchMove(e) {
-    console.log('Touch move triggered');
+    console.log('Touch move triggered', e.target.className);
     if (!isDragging) return;
 
     const touchX = e.touches[0].clientX;
@@ -108,12 +126,25 @@ function handleDragStart(e) {
     }
 }
 
-function handleDragEnd(e) {
-    if (draggedItem) {
-        draggedItem.classList.remove('is-dragging');
-        draggedItem = null;
-        draggedFrom = null;
+function handleTouchEnd(e) {
+    console.log('Touch end triggered');
+    if (!isDragging || !draggedItem) return;
+
+    draggedItem.style.transform = ''; // Reset the transform
+    draggedItem.style.display = 'none'; // Temporarily hide the dragged item to check what's underneath
+
+    const dropTarget = document.elementFromPoint(e.changedTouches[0].clientX, e.changedTouches[0].clientY);
+
+    draggedItem.style.display = ''; // Bring the dragged item back to display
+
+    if (dropTarget.classList.contains('placeholder') || (dropTarget.parentNode && dropTarget.parentNode.classList.contains('placeholder'))) {
+        handleBoardDrop(e);
+    } else if (dropTarget === left || dropTarget === right || dropTarget.closest('.unshuffled')) {
+        handleDropToSide(e);
     }
+    console.log('Drop target:', dropTarget);
+
+    isDragging = false;
 }
 
 function handleTouchStart(e) {
@@ -137,16 +168,24 @@ function handleTouchEnd(e) {
     if (!isDragging || !draggedItem) return;
 
     draggedItem.style.transform = ''; // Reset the transform
-    isDragging = false;
+    draggedItem.style.display = 'none'; // Temporarily hide the dragged item to check what's underneath
 
-    // Now determine if the dragged item was released over any of the drop targets
     const dropTarget = document.elementFromPoint(e.changedTouches[0].clientX, e.changedTouches[0].clientY);
-    
+
+    draggedItem.style.display = ''; // Bring the dragged item back to display
+
+    // Check if it was dropped over a placeholder on the board
     if (dropTarget.classList.contains('placeholder')) {
-        handleBoardDrop(e);
-    } else if (dropTarget === left || dropTarget === right || dropTarget.closest('.unshuffled')) {
+        const customEvent = new CustomEvent('boarddrop', { detail: { dropTarget: dropTarget } });
+        board.dispatchEvent(customEvent);
+    } 
+    // Check if it was dropped back to the side areas (either left or right unshuffled areas)
+    else if (dropTarget === left || dropTarget === right || dropTarget.closest('.unshuffled')) {
         handleDropToSide(e);
     }
+    
+    console.log('Drop target:', dropTarget);
+    isDragging = false;
 }
 
 function handleDropToSide(e) {
