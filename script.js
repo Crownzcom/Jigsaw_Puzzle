@@ -1,242 +1,218 @@
-let actions = 0;
-let startTime;
-let interval;
-let draggedItem = null;
-let draggedFrom = null;
-let isDragging = false;
-let initialTouchX, initialTouchY;
+let actions = 0
+let startTime
+let interval
+let draggedItem = null
+let draggedFrom = null
+let isDragging = false
+let initialTouchX, initialTouchY
 
-const board = document.querySelector('.board');
-const left = document.querySelector('.unshuffled.left');
-const right = document.querySelector('.unshuffled.right');
+const board = document.querySelector('.board')
+const left = document.querySelector('.unshuffled.left')
+const right = document.querySelector('.unshuffled.right')
 
-generateCards();
-setupDragAndDrop();
-startTimer();
+window.addEventListener('resize', handleResize)
+handleResize() // Call this function once at the start to set the initial orientation.
 
-function generateCards() {
-    let positions = [
-        '0 0', '-60px 0', '-120px 0', '-180px 0',
-        '0 -60px', '-60px -60px', '-120px -60px', '-180px -60px',
-        '0 -120px', '-60px -120px', '-120px -120px', '-180px -120px',
-        '0 -180px', '-60px -180px', '-120px -180px', '-180px -180px'
-    ];
+generateCards()
+setupDragAndDrop()
+startTimer()
 
-    for (let i = 0; i < 16; i++) {
-        let card = document.createElement('div');
-        card.classList.add('card');
-        card.style.backgroundPosition = positions[i];
-        card.setAttribute('draggable', true);
-        card.setAttribute('data-id', i + 1);
-        if (i < 8) {
-            left.appendChild(card);
-        } else {
-            right.appendChild(card);
-        }
-
-        let placeholder = document.createElement('div');
-        placeholder.classList.add('placeholder');
-        placeholder.setAttribute('data-id', i + 1);
-        board.appendChild(placeholder);
+function generateCards () {
+  for (let i = 1; i <= 16; i++) {
+    let card = document.createElement('div')
+    card.classList.add('card')
+    card.style.backgroundImage = `url('images/${i}.jpg')`
+    card.setAttribute('draggable', true)
+    card.setAttribute('data-id', i)
+    if (i <= 8) {
+      left.appendChild(card)
+    } else {
+      right.appendChild(card)
     }
+
+    let placeholder = document.createElement('div')
+    placeholder.classList.add('placeholder')
+    placeholder.setAttribute('data-id', i)
+    board.appendChild(placeholder)
+  }
 }
 
-function setupDragAndDrop() {
+function setupDragAndDrop () {
+  board.addEventListener('dragover', preventDefault)
+  board.addEventListener('drop', handleBoardDrop)
+  board.addEventListener('boarddrop', handleBoardDrop) // This line listens for our custom event
 
-    board.addEventListener('dragover', preventDefault);
-    board.addEventListener('drop', handleBoardDrop);
-    board.addEventListener('boarddrop', handleBoardDrop);  // Add this line here
-    document.addEventListener('dragstart', handleDragStart);
-    document.addEventListener('dragend', handleDragEnd);
-    left.addEventListener('drop', handleDropToSide);
-    right.addEventListener('drop', handleDropToSide);
+  document.addEventListener('dragstart', handleDragStart)
+  document.addEventListener('dragend', handleDragEnd)
 
-    let cards = document.querySelectorAll('.card');
-    cards.forEach(card => {
-        card.addEventListener('touchstart', handleTouchStart, { passive: false });
-        card.addEventListener('touchmove', handleTouchMove, { passive: false });
-        card.addEventListener('touchend', handleTouchEnd, { passive: false });
-    });
+  left.addEventListener('drop', handleDropToSide)
+  right.addEventListener('drop', handleDropToSide)
+  left.addEventListener('dragover', preventDefault)
+  right.addEventListener('dragover', preventDefault)
 
+  let cards = document.querySelectorAll('.card')
+  cards.forEach(card => {
+    card.addEventListener('touchstart', handleTouchStart, { passive: false })
+    card.addEventListener('touchmove', handleTouchMove, { passive: false })
+    card.addEventListener('touchend', handleTouchEnd, { passive: false })
+  })
 }
 
-
-function preventDefault(e) {
-    e.preventDefault();
+function preventDefault (e) {
+  e.preventDefault()
 }
 
-function handleDragEnd(e) {
-    if (draggedItem) {
-        draggedItem.classList.remove('is-dragging');
-        draggedItem = null;
+function handleBoardDrop (e) {
+  e.preventDefault()
+  const target = e.type === 'boarddrop' ? e.detail.dropTarget : e.target
+
+  if (
+    draggedItem &&
+    (target.classList.contains('placeholder') || target.closest('.placeholder'))
+  ) {
+    actions++
+    document.getElementById('actions').innerText = actions
+
+    if (target.classList.contains('placeholder')) {
+      swapElements(draggedItem, target)
+    } else {
+      swapElements(draggedItem, target.closest('.placeholder'))
     }
+    checkCompletion()
+  }
 }
 
-function handleBoardDrop(e) {
-    e.preventDefault();
-    
-    // determine the target based on event type
-    const target = e.type === 'boarddrop' ? e.detail.dropTarget : e.target;
+function handleDragStart (e) {
+  if (e.target.classList.contains('card')) {
+    draggedItem = e.target
+    draggedFrom = e.target.parentElement
+    draggedItem.classList.add('is-dragging')
+  }
+}
 
-    if (draggedItem && target.classList.contains('placeholder')) {
-        actions++;
-        document.getElementById('actions').innerText = actions;
+function handleDragEnd (e) {
+  draggedItem.classList.remove('is-dragging')
+  draggedItem.style.zIndex = '' // Reset the z-index
+  draggedItem = null
+  draggedFrom = null
+}
 
-        const dataId = draggedItem.getAttribute('data-id');
-        const bgPosition = draggedItem.style.backgroundPosition;
+function handleTouchStart (e) {
+  e.preventDefault()
+  if (e.target.classList.contains('card')) {
+    draggedItem = e.target
+    draggedFrom = e.target.parentElement
+    isDragging = true
 
-        target.classList.remove('placeholder');
-        target.classList.add('card');
-        target.style.backgroundImage = "url('images/image.jpg')";
-        target.style.backgroundPosition = bgPosition;
-        target.setAttribute('data-id', dataId);
-
-        draggedItem.removeAttribute('data-id');
-        draggedItem.style.backgroundPosition = 'center';
-        draggedItem.style.backgroundImage = "none";
-        draggedItem.classList.remove('card');
-        draggedItem.classList.add('placeholder');
-
-        draggedItem = null; // Reset dragged item
-
-        checkCompletion();
-    }
+    initialTouchX = e.touches[0].clientX
+    initialTouchY = e.touches[0].clientY
+  }
 }
 
 function handleTouchMove(e) {
-    console.log('Touch move triggered', e.target.className);
     if (!isDragging) return;
 
     const touchX = e.touches[0].clientX;
     const touchY = e.touches[0].clientY;
 
-    // Calculate the distance moved
-    const dx = touchX - initialTouchX;
-    const dy = touchY - initialTouchY;
+    const dx = touchX - initialTouchX - (draggedItem.offsetWidth / 2);
+    const dy = touchY - initialTouchY - (draggedItem.offsetHeight / 2);
 
-    // Move the dragged item
     draggedItem.style.transform = `translate(${dx}px, ${dy}px)`;
-}
-
-function handleDragStart(e) {
-    if (e.target.classList.contains('card')) {
-        draggedItem = e.target;
-        draggedFrom = e.target.parentElement;
-        draggedItem.classList.add('is-dragging');
-    }
+    draggedItem.style.zIndex = '1000'; // Adjust the z-index while dragging
 }
 
 function handleTouchEnd(e) {
-    console.log('Touch end triggered');
     if (!isDragging || !draggedItem) return;
+    draggedItem.style.transform = '';
+    draggedItem.style.zIndex = ''; // Reset the z-index
 
-    draggedItem.style.transform = ''; // Reset the transform
-    draggedItem.style.display = 'none'; // Temporarily hide the dragged item to check what's underneath
+    let dropTarget = document.elementFromPoint(
+        e.changedTouches[0].clientX,
+        e.changedTouches[0].clientY
+    );
 
-    const dropTarget = document.elementFromPoint(e.changedTouches[0].clientX, e.changedTouches[0].clientY);
-
-    draggedItem.style.display = ''; // Bring the dragged item back to display
-
-    if (dropTarget.classList.contains('placeholder') || (dropTarget.parentNode && dropTarget.parentNode.classList.contains('placeholder'))) {
-        handleBoardDrop(e);
-    } else if (dropTarget === left || dropTarget === right || dropTarget.closest('.unshuffled')) {
-        handleDropToSide(e);
+    // Check if the card itself is the detected target and try to get the correct drop target.
+    if (draggedItem === dropTarget) {
+        const offset = draggedItem.offsetWidth / 2;
+        dropTarget = document.elementFromPoint(
+            e.changedTouches[0].clientX + offset,
+            e.changedTouches[0].clientY + offset
+        ) || dropTarget;
     }
-    console.log('Drop target:', dropTarget);
 
-    isDragging = false;
-}
-
-function handleTouchStart(e) {
-    e.preventDefault(); // Explicitly Prevents Default Behavior for touchstart
-    console.log('Touch start triggered');
-    if (e.target.classList.contains('card')) {
-        e.preventDefault();
-
-        draggedItem = e.target;
-        draggedFrom = e.target.parentElement;
-
-        isDragging = true;
-
-        initialTouchX = e.touches[0].clientX;
-        initialTouchY = e.touches[0].clientY;
-    }
-}
-
-function handleTouchEnd(e) {
-    console.log('Touch end triggered');
-    if (!isDragging || !draggedItem) return;
-
-    draggedItem.style.transform = ''; // Reset the transform
-    draggedItem.style.display = 'none'; // Temporarily hide the dragged item to check what's underneath
-
-    const dropTarget = document.elementFromPoint(e.changedTouches[0].clientX, e.changedTouches[0].clientY);
-
-    draggedItem.style.display = ''; // Bring the dragged item back to display
-
-    // Check if it was dropped over a placeholder on the board
-    if (dropTarget.classList.contains('placeholder')) {
-        const customEvent = new CustomEvent('boarddrop', { detail: { dropTarget: dropTarget } });
+    if (
+        dropTarget.classList.contains('placeholder') ||
+        dropTarget.closest('.placeholder')
+    ) {
+        const customEvent = new CustomEvent('boarddrop', {
+            detail: { dropTarget: dropTarget }
+        });
         board.dispatchEvent(customEvent);
-    } 
-    // Check if it was dropped back to the side areas (either left or right unshuffled areas)
-    else if (dropTarget === left || dropTarget === right || dropTarget.closest('.unshuffled')) {
+    } else if (dropTarget.closest('.unshuffled')) {
         handleDropToSide(e);
     }
-    
-    console.log('Drop target:', dropTarget);
+
     isDragging = false;
 }
+function handleDropToSide (e) {
+  e.preventDefault()
+  if (!draggedItem) return
 
-function handleDropToSide(e) {
-    e.preventDefault();
-    if (draggedItem) {
-        actions++;
-        document.getElementById('actions').innerText = actions;
+  actions++
+  document.getElementById('actions').innerText = actions
 
-        if (e.target.classList.contains('placeholder')) {
-            e.target.classList.remove('placeholder');
-            e.target.classList.add('card');
-            e.target.style.backgroundImage = "url('images/image.jpg')";
-            e.target.style.backgroundPosition = draggedItem.style.backgroundPosition;
-            e.target.setAttribute('data-id', draggedItem.getAttribute('data-id'));
-
-            draggedItem.style.backgroundPosition = 'center';
-            draggedItem.removeAttribute('data-id');
-            draggedItem.style.backgroundImage = "none";
-            draggedItem.classList.remove('card');
-            draggedItem.classList.add('placeholder');
-        } else if (e.target.classList.contains('card')) {
-            const tmpBackgroundPos = e.target.style.backgroundPosition;
-            const tmpDataId = e.target.getAttribute('data-id');
-
-            e.target.style.backgroundPosition = draggedItem.style.backgroundPosition;
-            e.target.setAttribute('data-id', draggedItem.getAttribute('data-id'));
-
-            draggedItem.style.backgroundPosition = tmpBackgroundPos;
-            draggedItem.setAttribute('data-id', tmpDataId);
-        }
-    }
+  if (
+    e.target.classList.contains('placeholder') ||
+    e.target.closest('.placeholder')
+  ) {
+    swapElements(draggedItem, e.target.closest('.placeholder'))
+  }
 }
 
-function startTimer() {
-    startTime = Date.now();
-    interval = setInterval(() => {
-        const elapsed = Math.floor((Date.now() - startTime) / 1000);
-        document.getElementById('time').innerText = elapsed;
-    }, 1000);
+function swapElements (elem1, elem2) {
+  const temp = document.createElement('div')
+  elem1.parentNode.insertBefore(temp, elem1)
+  elem2.parentNode.insertBefore(elem1, elem2)
+  temp.parentNode.insertBefore(elem2, temp)
+  temp.parentNode.removeChild(temp)
 }
 
-function checkCompletion() {
-    const cards = document.querySelectorAll('.board .card');
-    let correct = 0;
-    cards.forEach(card => {
-        if (card.getAttribute('data-id') === (Array.from(card.parentNode.children).indexOf(card) + 1).toString()) {
-            correct++;
-        }
-    });
-    if (correct === 16) {
-        clearInterval(interval);
-        alert('Congratulations! You completed the puzzle.');
+function startTimer () {
+  startTime = Date.now()
+  interval = setInterval(() => {
+    const elapsed = Math.floor((Date.now() - startTime) / 1000)
+    document.getElementById('time').innerText = elapsed
+  }, 1000)
+}
+
+function checkCompletion () {
+  const cards = document.querySelectorAll('.board .card')
+  let correct = 0
+  cards.forEach(card => {
+    if (
+      card.getAttribute('data-id') ===
+      (Array.from(card.parentNode.children).indexOf(card) + 1).toString()
+    ) {
+      correct++
     }
+  })
+  if (correct === 16) {
+    clearInterval(interval)
+    alert('Congratulations! You completed the puzzle.')
+  }
+}
+
+/* Handle Resizing*/
+function handleResize () {
+  const gameElement = document.querySelector('.game')
+  if (window.innerHeight > window.innerWidth) {
+    // Portrait
+    gameElement.style.flexDirection = 'column'
+    board.style.margin = '20px 0'
+  } else {
+    // Landscape
+    gameElement.style.flexDirection = 'row'
+    board.style.margin = '0 20px'
+  }
 }
