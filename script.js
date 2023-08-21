@@ -1,8 +1,38 @@
 let moveCount = 0;
+let timerInterval = null;
+let elapsedTime = 0;
 
 function updateMoveCount() {
     const moveCounter = document.querySelector(".moves");
     moveCounter.textContent = moveCount;
+}
+
+function formatTime(seconds) {
+    const hrs = Math.floor(seconds / 3600);
+    const mins = Math.floor((seconds % 3600) / 60);
+    const secs = seconds % 60;
+    
+    let timeString = '';
+    if (hrs > 0) {
+        timeString += `${String(hrs).padStart(2, '0')}:`;
+    }
+    timeString += `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+    
+    return timeString;
+}
+
+function startTimer() {
+    if (!timerInterval) {
+        timerInterval = setInterval(function () {
+            elapsedTime++;
+            document.getElementById('time').textContent = formatTime(elapsedTime);
+        }, 1000);
+    }
+}
+
+function stopTimer() {
+    clearInterval(timerInterval);
+    timerInterval = null;
 }
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -55,6 +85,13 @@ document.addEventListener("DOMContentLoaded", function () {
     setupDragAndDrop();
 });
 
+function checkGameCompletion() {
+    const mainBoardCards = document.querySelectorAll('#main-board .card');
+    if (mainBoardCards.length === 16) {
+        stopTimer();
+    }
+}
+
 function setupDragAndDrop() {
     const cards = document.querySelectorAll('.card');
     const placeholders = document.querySelectorAll('.placeholder');
@@ -65,6 +102,7 @@ function setupDragAndDrop() {
         card.draggable = true;
 
         card.addEventListener('dragstart', function (e) {
+            startTimer();
             e.dataTransfer.setData('text/plain', card.dataset.id);
             card.setAttribute('previous-parent-id', card.parentElement.getAttribute('id'));
             draggedCard = card;
@@ -115,6 +153,8 @@ function setupDragAndDrop() {
             }
             
             this.classList.remove('hovered');
+
+            checkGameCompletion();
         });
     });
 
@@ -123,6 +163,7 @@ function setupDragAndDrop() {
         card.addEventListener('touchstart', function (e) {
             draggedCard = card;
             e.target.classList.add('dragging');
+            startTimer();
         });
 
         card.addEventListener('touchmove', function (e) {
@@ -149,6 +190,7 @@ function setupDragAndDrop() {
                 const previousParent = document.getElementById(draggedCard.getAttribute('previous-parent-id'));
                 previousParent.appendChild(draggedCard);
             }
+            checkGameCompletion();
         });
     });
 }
