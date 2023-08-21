@@ -126,7 +126,6 @@ body {
 ======================================
 
 document.addEventListener("DOMContentLoaded", function () {
-
     // Shuffle function
     function shuffle(array) {
         for (let i = array.length - 1; i > 0; i--) {
@@ -134,7 +133,7 @@ document.addEventListener("DOMContentLoaded", function () {
             [array[i], array[j]] = [array[j], array[i]];
         }
     }
-  
+
     // Get all card elements
     let cards = [];
     for (let i = 1; i <= 16; i++) {
@@ -144,22 +143,26 @@ document.addEventListener("DOMContentLoaded", function () {
         card.style.backgroundImage = 'url(images/' + i + '.jpg)';
         cards.push(card);
     }
-  
+
     // Shuffle the cards array
     shuffle(cards);
-  
+
     // Append shuffled cards to sideboards alternately
     const sideboardLeft = document.getElementById("sideboard-left");
     const sideboardRight = document.getElementById("sideboard-right");
-  
-    for (let i = 0; i < cards.length; i++) {
-        if (i % 2 === 0) {
-            sideboardLeft.appendChild(cards[i]);
-        } else {
-            sideboardRight.appendChild(cards[i]);
-        }
+
+    for (let i = 0; i < 8; i++) {
+        const placeholderLeft = document.createElement("div");
+        placeholderLeft.classList.add("placeholder");
+        sideboardLeft.appendChild(placeholderLeft);
+        placeholderLeft.appendChild(cards[i]);
+
+        const placeholderRight = document.createElement("div");
+        placeholderRight.classList.add("placeholder");
+        sideboardRight.appendChild(placeholderRight);
+        placeholderRight.appendChild(cards[i + 8]);
     }
-    
+
     // Create placeholders for the main board
     const board = document.getElementById("main-board");
     for (let i = 1; i <= 16; i++) {
@@ -168,80 +171,191 @@ document.addEventListener("DOMContentLoaded", function () {
         placeholder.setAttribute("data-id", i);
         board.appendChild(placeholder);
     }
-    
-    
-    // Drag and Drop Logic
-    function setupDragAndDrop() {
-        const cards = document.querySelectorAll(".card");
-        const placeholders = document.querySelectorAll(".placeholder");
-        const sideboards = [sideboardLeft, sideboardRight];
-  
-        // Allow the cards to be draggable
-        cards.forEach(card => {
-            card.draggable = true;
-            card.addEventListener('dragstart', dragStart);
-            card.addEventListener('dragend', dragEnd);
+
+    setupDragAndDrop();
+});
+
+//ONLY MOUSE MODE
+// function setupDragAndDrop() {
+//     const cards = document.querySelectorAll('.card');
+//     const placeholders = document.querySelectorAll('.placeholder');
+
+//     cards.forEach(card => {
+//         card.draggable = true;
+
+//         card.addEventListener('dragstart', function (e) {
+//             e.dataTransfer.setData('text/plain', card.dataset.id);
+//             card.setAttribute('previous-parent-id', card.parentElement.getAttribute('id'));
+//             setTimeout(() => {
+//                 card.classList.add('invisible');
+//             }, 0);
+//         });
+
+//         card.addEventListener('dragend', function () {
+//             card.classList.remove('invisible');
+//         });
+//     });
+
+//     placeholders.forEach(placeholder => {
+//         placeholder.addEventListener('dragover', function (e) {
+//             e.preventDefault();
+//         });
+
+//         placeholder.addEventListener('dragenter', function (e) {
+//             e.preventDefault();
+//             this.classList.add('hovered');
+//         });
+
+//         placeholder.addEventListener('dragleave', function () {
+//             this.classList.remove('hovered');
+//         });
+
+//         placeholder.addEventListener('drop', function (e) {
+//             const cardId = e.dataTransfer.getData('text/plain');
+//             const card = document.querySelector(`.card[data-id="${cardId}"]`);
+            
+//             // Check if placeholder already has a card
+//             if (this.querySelector('.card')) {
+//                 const previousParentId = card.getAttribute('previous-parent-id');
+//                 const previousParent = document.getElementById(previousParentId);
+//                 previousParent.appendChild(card);
+//             } else {
+//                 this.appendChild(card);
+//             }
+
+//             // Check if sideboard is full
+//             if (this.parentElement.id.includes('sideboard') && this.parentElement.querySelectorAll('.card').length > 8) {
+//                 const previousParentId = card.getAttribute('previous-parent-id');
+//                 const previousParent = document.getElementById(previousParentId);
+//                 previousParent.appendChild(card);
+//             }
+            
+//             this.classList.remove('hovered');
+//         });
+//     });
+// }
+
+function setupDragAndDrop() {
+    const cards = document.querySelectorAll('.card');
+    const placeholders = document.querySelectorAll('.placeholder');
+
+    cards.forEach(card => {
+        card.draggable = true;
+
+        card.addEventListener('dragstart', dragStart);
+        card.addEventListener('dragend', dragEnd);
+
+        // For touch devices
+        card.addEventListener('touchstart', handleTouchStart, false);
+        card.addEventListener('touchmove', handleTouchMove, false);
+        card.addEventListener('touchend', handleTouchEnd, false);
+    });
+
+    placeholders.forEach(placeholder => {
+        placeholder.addEventListener('dragover', dragOver);
+        placeholder.addEventListener('dragenter', dragEnter);
+        placeholder.addEventListener('dragleave', dragLeave);
+        placeholder.addEventListener('drop', dragDrop);
+    });
+
+    function dragStart(e) {
+        e.dataTransfer.setData('text/plain', this.dataset.id);
+        this.setAttribute('previous-parent-id', this.parentElement.getAttribute('id'));
+        setTimeout(() => {
+            this.classList.add('invisible');
+        }, 0);
+    }
+
+    function dragEnd() {
+        this.classList.remove('invisible');
+    }
+
+    function dragOver(e) {
+        e.preventDefault();
+    }
+
+    function dragEnter(e) {
+        e.preventDefault();
+        this.classList.add('hovered');
+    }
+
+    function dragLeave() {
+        this.classList.remove('hovered');
+    }
+
+    function dragDrop(e) {
+        handleDrop(e, this);
+    }
+
+    function handleTouchStart(e) {
+        this.style.position = 'absolute';
+        this.style.zIndex = '1000';
+        document.body.appendChild(this);
+        handleTouchMove.call(this, e);
+    }
+
+    function handleTouchMove(e) {
+        e.preventDefault();
+        const card = e.target;
+        card.style.left = `${e.touches[0].clientX - card.offsetWidth / 2}px`;
+        card.style.top = `${e.touches[0].clientY - card.offsetHeight / 2}px`;
+    }
+
+    function handleTouchEnd(e) {
+        const card = e.target;
+        const placeholder = getClosestDropTarget(card);
+
+        if (placeholder && !placeholder.querySelector('.card')) {
+            placeholder.appendChild(card);
+        } else {
+            returnCardToOriginalPosition(card);
+        }
+
+        card.style.position = '';
+        card.style.zIndex = '';
+        card.style.left = '';
+        card.style.top = '';
+    }
+
+    function getClosestDropTarget(card) {
+        const cardRect = card.getBoundingClientRect();
+        return Array.from(placeholders).find(placeholder => {
+            const rect = placeholder.getBoundingClientRect();
+            return (
+                rect.left <= cardRect.left + cardRect.width / 2 &&
+                rect.right >= cardRect.left + cardRect.width / 2 &&
+                rect.top <= cardRect.top + cardRect.height / 2 &&
+                rect.bottom >= cardRect.top + cardRect.height / 2
+            );
         });
-  
-        // Drag functions
-        function dragStart() {
-            setTimeout(() => {
-                this.className += ' invisible';
-            }, 0);
+    }
+
+    function handleDrop(e, placeholder) {
+        const cardId = e.dataTransfer.getData('text/plain');
+        const card = document.querySelector(`.card[data-id="${cardId}"]`);
+
+        if (!placeholder.querySelector('.card')) {
+            placeholder.appendChild(card);
+        } else {
+            returnCardToOriginalPosition(card);
         }
-  
-        function dragEnd() {
-            this.className = 'card';
+
+        if (placeholder.parentElement.id.includes('sideboard') && placeholder.parentElement.querySelectorAll('.card').length > 8) {
+            returnCardToOriginalPosition(card);
         }
-  
-        // Drop functions for main board placeholders
-        placeholders.forEach(placeholder => {
-            placeholder.addEventListener('dragover', dragOver);
-            placeholder.addEventListener('dragenter', dragEnter);
-            placeholder.addEventListener('dragleave', dragLeave);
-            placeholder.addEventListener('drop', dragDrop);
-        });
-  
-        // Drop functions for sideboards
-        sideboards.forEach(sideboard => {
-            sideboard.addEventListener('dragover', dragOver);
-            sideboard.addEventListener('dragenter', dragEnter);
-            sideboard.addEventListener('dragleave', dragLeave);
-            sideboard.addEventListener('drop', function(e) {
-                this.appendChild(document.querySelector('.invisible'));
-            });
-        });
-  
-        function dragOver(e) {
-            e.preventDefault();
-        }
-  
-        function dragEnter(e) {
-            e.preventDefault();
-            this.className += ' hovered';
-        }
-  
-        function dragLeave() {
-            if (this.classList.contains('placeholder')) {
-                this.className = 'placeholder';
-            } else {
-                this.className = 'sideboard';
-            }
-        }
-  
-        function dragDrop() {
-            this.className = 'placeholder';
-            if (this.childNodes.length === 0) {
-                const card = document.querySelector('.invisible');
-                this.append(card);
-            }
+
+        placeholder.classList.remove('hovered');
+    }
+
+    function returnCardToOriginalPosition(card) {
+        const previousParentId = card.getAttribute('previous-parent-id');
+        const previousParent = document.getElementById(previousParentId);
+        if (previousParent) {
+            previousParent.appendChild(card);
+        } else {
+            // Default to the left sideboard if the previous parent cannot be found
+            document.getElementById('sideboard-left').appendChild(card);
         }
     }
-  
-    // Call the setupDragAndDrop function to initialize the drag and drop logic
-    setupDragAndDrop();
-  
-    // TODO: Additional game logic can be added here...
-  
-  });
-  
+}
+

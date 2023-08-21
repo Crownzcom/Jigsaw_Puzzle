@@ -1,3 +1,9 @@
+let moveCount = 0;
+
+function updateMoveCount() {
+    const moveCounter = document.querySelector(".moves");
+    moveCounter.textContent = moveCount;
+}
 
 document.addEventListener("DOMContentLoaded", function () {
     // Shuffle function
@@ -49,64 +55,100 @@ document.addEventListener("DOMContentLoaded", function () {
     setupDragAndDrop();
 });
 
-// function setupDragAndDrop() {
-//     const cards = document.querySelectorAll('.card');
-//     const placeholders = document.querySelectorAll('.placeholder');
+function setupDragAndDrop() {
+    const cards = document.querySelectorAll('.card');
+    const placeholders = document.querySelectorAll('.placeholder');
 
-//     cards.forEach(card => {
-//         card.draggable = true;
+    let draggedCard = null;
 
-//         card.addEventListener('dragstart', function (e) {
-//             e.dataTransfer.setData('text/plain', card.dataset.id);
-//             card.setAttribute('previous-parent-id', card.parentElement.getAttribute('id'));
-//             setTimeout(() => {
-//                 card.classList.add('invisible');
-//             }, 0);
-//         });
+    cards.forEach(card => {
+        card.draggable = true;
 
-//         card.addEventListener('dragend', function () {
-//             card.classList.remove('invisible');
-//         });
-//     });
+        card.addEventListener('dragstart', function (e) {
+            e.dataTransfer.setData('text/plain', card.dataset.id);
+            card.setAttribute('previous-parent-id', card.parentElement.getAttribute('id'));
+            draggedCard = card;
+            setTimeout(() => {
+                card.classList.add('invisible');
+            }, 0);
+        });
 
-//     placeholders.forEach(placeholder => {
-//         placeholder.addEventListener('dragover', function (e) {
-//             e.preventDefault();
-//         });
+        card.addEventListener('dragend', function () {
+            card.classList.remove('invisible');
+            draggedCard = null;
+        });
+    });
 
-//         placeholder.addEventListener('dragenter', function (e) {
-//             e.preventDefault();
-//             this.classList.add('hovered');
-//         });
+    placeholders.forEach(placeholder => {
+        placeholder.addEventListener('dragover', function (e) {
+            e.preventDefault();
+        });
 
-//         placeholder.addEventListener('dragleave', function () {
-//             this.classList.remove('hovered');
-//         });
+        placeholder.addEventListener('dragenter', function (e) {
+            e.preventDefault();
+            this.classList.add('hovered');
+        });
 
-//         placeholder.addEventListener('drop', function (e) {
-//             const cardId = e.dataTransfer.getData('text/plain');
-//             const card = document.querySelector(`.card[data-id="${cardId}"]`);
+        placeholder.addEventListener('dragleave', function () {
+            this.classList.remove('hovered');
+        });
+
+        placeholder.addEventListener('drop', function (e) {
+            e.preventDefault();
+            const cardId = e.dataTransfer.getData('text/plain');
+            const card = document.querySelector(`.card[data-id="${cardId}"]`);
             
-//             // Check if placeholder already has a card
-//             if (this.querySelector('.card')) {
-//                 const previousParentId = card.getAttribute('previous-parent-id');
-//                 const previousParent = document.getElementById(previousParentId);
-//                 previousParent.appendChild(card);
-//             } else {
-//                 this.appendChild(card);
-//             }
+            if (!this.querySelector('.card')) {
+                this.appendChild(card);
+                moveCount++;
+                updateMoveCount();
+            } else {
+                const previousParentId = card.getAttribute('previous-parent-id');
+                const previousParent = document.getElementById(previousParentId);
+                previousParent.appendChild(card);
+            }
 
-//             // Check if sideboard is full
-//             if (this.parentElement.id.includes('sideboard') && this.parentElement.querySelectorAll('.card').length > 8) {
-//                 const previousParentId = card.getAttribute('previous-parent-id');
-//                 const previousParent = document.getElementById(previousParentId);
-//                 previousParent.appendChild(card);
-//             }
+            if (this.parentElement.id.includes('sideboard') && this.parentElement.querySelectorAll('.card').length > 8) {
+                const previousParentId = card.getAttribute('previous-parent-id');
+                const previousParent = document.getElementById(previousParentId);
+                previousParent.appendChild(card);
+            }
             
-//             this.classList.remove('hovered');
-//         });
-//     });
-// }
+            this.classList.remove('hovered');
+        });
+    });
 
+    // Touchscreen support
+    cards.forEach(card => {
+        card.addEventListener('touchstart', function (e) {
+            draggedCard = card;
+            e.target.classList.add('dragging');
+        });
 
+        card.addEventListener('touchmove', function (e) {
+            e.preventDefault();  // Prevent the default touch behavior
+            let touchLocation = e.targetTouches[0];
+            card.style.top = touchLocation.pageY - 50 + 'px';
+            card.style.left = touchLocation.pageX - 50 + 'px';
+            card.style.position = 'fixed';
+        });
 
+        card.addEventListener('touchend', function (e) {
+            card.style.position = '';
+            card.style.top = '';
+            card.style.left = '';
+            e.target.classList.remove('dragging');
+
+            const dropTarget = document.elementFromPoint(e.changedTouches[0].pageX, e.changedTouches[0].pageY);
+
+            if (dropTarget && dropTarget.classList.contains('placeholder') && !dropTarget.querySelector('.card')) {
+                dropTarget.appendChild(draggedCard);
+                moveCount++;
+                updateMoveCount();
+            } else if (draggedCard.getAttribute('previous-parent-id')) {
+                const previousParent = document.getElementById(draggedCard.getAttribute('previous-parent-id'));
+                previousParent.appendChild(draggedCard);
+            }
+        });
+    });
+}
