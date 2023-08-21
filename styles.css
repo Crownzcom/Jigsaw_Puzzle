@@ -17,26 +17,46 @@ body {
     margin: 20px auto;
 }
 
-.board, .unshuffled {
-    display: grid;
-    grid-gap: 5px;
-    width: 340px;
-    height: 340px;
-    border: 1px solid #ddd;
-    background-color: #fff;
-    padding: 5px;
+.game-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 90vh;
+    width: 100%;
+    max-width: 1200px;
+    margin: 2rem auto;
     position: relative;
 }
 
 .board {
+    display: grid;
+    grid-gap: 5px;
+    width: 340px;
+    height: 340px;
+    padding: 5px;
+    border: 2px solid #f09b1c;
     grid-template-columns: repeat(4, 80px);
 }
 
-.card,
-.placeholder {
+.sideboard {
+    display: grid;
+    gap: 5px;
+    width: 170px;
+    height: 340px;
+    grid-template-columns: repeat(2, 80px);
+    grid-template-rows: repeat(4, 80px);
+}
+
+.board-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.card, .placeholder {
     width: 80px;
     height: 80px;
-    border: 1px solid #ddd;
+    border: 1px solid #5f5e5e;
     background-color: #fff;
     transition: all 0.2s;
 }
@@ -53,52 +73,30 @@ body {
     z-index: 1000;
 }
 
-.game {
-    display: flex;
-    align-items: center;
-    width: 100%;
-    flex-direction: column;
-    justify-content: center;
+.placeholder {
+    border: 2px solid #5f5e5e;  /* Adjusted border */
+    border-radius: 5px;  /* Added rounded corners */
+    background-color: #f5f5f5;  /* Lighter background color */
 }
 
-.info, .unshuffled {
-    width: 420px;
-}
-
-@media (orientation: landscape) {
-    .game {
+/* Landscape Layout */
+@media screen and (min-width: 600px) {
+    .board-container {
         flex-direction: row;
     }
-
-    .board {
-        margin: 0 20px;
-    }
-
-    .unshuffled {
-        grid-template-columns: repeat(2, 80px);
-        grid-auto-rows: auto;
-        width: 170px;
-    }
 }
 
-@media (orientation: portrait) {
-    .unshuffled {
-        height: auto;
-        display: grid;
-        grid-template-columns: repeat(4, 100px);
-        grid-gap: 5px;
-        justify-content: center;
-        width: 420px;
-    }
-    .unshuffled.left,
-    .unshuffled.right {
-        justify-items: start;
-    }
-}
-
-@media (max-aspect-ratio: 1/1) {
-    .game {
+/* Portrait Layout */
+@media screen and (max-width: 599px) {
+    .board-container {
         flex-direction: column;
+    }
+
+    .sideboard {
+        width: 340px;
+        height: 170px;
+        grid-template-columns: repeat(4, 80px);
+        grid-template-rows: repeat(2, 80px);
     }
 
     .board {

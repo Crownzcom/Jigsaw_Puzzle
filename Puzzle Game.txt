@@ -1,0 +1,247 @@
+script.js(5)
+================================================================
+below is the full description of how the game works, and if possible, we can redevlope it with you and your guidance:
+- The game has one main board (4X) where all the cards are arranged.
+- It has 2 side boards (8 cards on each side) where the shuffled cards are placed where a player drags them onto the main board. 
+- The boards holding the shuffled cards are on the left and the right on larg screens, and as the screen gets smaller, the boards holding the shuffled cards are moved to the top and bottom, thus they actually sandwich the main board.
+- A player is able to drop the cards from the shuffled cards to the main board, and is able to move the cards back to the unshuffled section in case they think they need to rethink their moves. Also a player must be able to move a card within the main board in case they think the card is placed in the wrong location.
+- The timer starts when the game is started, and stops when the cards are correctly placed. 
+- All moves made by the player are indicated.
+- the time and the moves are always displayed at the top of the game
+- The game must be supported even on touch screens when dragging and dropping.
+
+- The other thing is that the images are labeled from 1 to 16 (1.jpg, 2.jpg, 3.jpg, ... 15.jpg, 16.jpg)
+- The first row of the board holds images 1 to 4, second row holds images 5 to 8, third row holds images 9 to 12 and the fourth row holds images 13 to 16. This helps to match with the box in which they are placed to check for game complication.
+
+In case you have any ideas, feel free to suggest.
+
+ENABLEING DRUG BACK, BUT IN A PLACEHOLDER
+=======================
+body {
+    font-family: 'Arial', sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    height: 100vh;
+    background-color: #f5f5f5;
+    padding-top: 20px;
+    font-size: 14px;
+}
+
+.info {
+    display: flex;
+    justify-content: space-between;
+    width: 420px;
+    margin: 20px auto;
+}
+
+.game-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 90vh;
+    width: 100%;
+    max-width: 1200px;
+    margin: 2rem auto;
+    position: relative;
+}
+
+.board {
+    display: grid;
+    grid-gap: 5px;
+    width: 340px;
+    height: 340px;
+    padding: 5px;
+    border: 2px solid #f09b1c;
+    grid-template-columns: repeat(4, 80px);
+}
+
+.sideboard {
+    display: grid;
+    gap: 5px;
+    width: 170px;
+    height: 340px;
+    grid-template-columns: repeat(2, 80px);
+    grid-template-rows: repeat(4, 80px);
+}
+
+.board-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.card, .placeholder {
+    width: 80px;
+    height: 80px;
+    border: 1px solid #5f5e5e;
+    background-color: #fff;
+    transition: all 0.2s;
+}
+
+.card {
+    cursor: pointer;
+    background-size: cover;
+    background-position: center;
+    border: none;
+}
+
+.card.is-dragging {
+    opacity: 0.5;
+    z-index: 1000;
+}
+
+.placeholder {
+    border: 2px solid #5f5e5e;  /* Adjusted border */
+    border-radius: 5px;  /* Added rounded corners */
+    background-color: #f5f5f5;  /* Lighter background color */
+}
+
+/* Landscape Layout */
+@media screen and (min-width: 600px) {
+    .board-container {
+        flex-direction: row;
+    }
+}
+
+/* Portrait Layout */
+@media screen and (max-width: 599px) {
+    .board-container {
+        flex-direction: column;
+    }
+
+    .sideboard {
+        width: 340px;
+        height: 170px;
+        grid-template-columns: repeat(4, 80px);
+        grid-template-rows: repeat(2, 80px);
+    }
+
+    .board {
+        margin: 20px 0;
+    }
+}
+
+======================================
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    // Shuffle function
+    function shuffle(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+    }
+  
+    // Get all card elements
+    let cards = [];
+    for (let i = 1; i <= 16; i++) {
+        let card = document.createElement('div');
+        card.classList.add('card');
+        card.setAttribute('data-id', i);
+        card.style.backgroundImage = 'url(images/' + i + '.jpg)';
+        cards.push(card);
+    }
+  
+    // Shuffle the cards array
+    shuffle(cards);
+  
+    // Append shuffled cards to sideboards alternately
+    const sideboardLeft = document.getElementById("sideboard-left");
+    const sideboardRight = document.getElementById("sideboard-right");
+  
+    for (let i = 0; i < cards.length; i++) {
+        if (i % 2 === 0) {
+            sideboardLeft.appendChild(cards[i]);
+        } else {
+            sideboardRight.appendChild(cards[i]);
+        }
+    }
+    
+    // Create placeholders for the main board
+    const board = document.getElementById("main-board");
+    for (let i = 1; i <= 16; i++) {
+        const placeholder = document.createElement("div");
+        placeholder.classList.add("placeholder");
+        placeholder.setAttribute("data-id", i);
+        board.appendChild(placeholder);
+    }
+    
+    
+    // Drag and Drop Logic
+    function setupDragAndDrop() {
+        const cards = document.querySelectorAll(".card");
+        const placeholders = document.querySelectorAll(".placeholder");
+        const sideboards = [sideboardLeft, sideboardRight];
+  
+        // Allow the cards to be draggable
+        cards.forEach(card => {
+            card.draggable = true;
+            card.addEventListener('dragstart', dragStart);
+            card.addEventListener('dragend', dragEnd);
+        });
+  
+        // Drag functions
+        function dragStart() {
+            setTimeout(() => {
+                this.className += ' invisible';
+            }, 0);
+        }
+  
+        function dragEnd() {
+            this.className = 'card';
+        }
+  
+        // Drop functions for main board placeholders
+        placeholders.forEach(placeholder => {
+            placeholder.addEventListener('dragover', dragOver);
+            placeholder.addEventListener('dragenter', dragEnter);
+            placeholder.addEventListener('dragleave', dragLeave);
+            placeholder.addEventListener('drop', dragDrop);
+        });
+  
+        // Drop functions for sideboards
+        sideboards.forEach(sideboard => {
+            sideboard.addEventListener('dragover', dragOver);
+            sideboard.addEventListener('dragenter', dragEnter);
+            sideboard.addEventListener('dragleave', dragLeave);
+            sideboard.addEventListener('drop', function(e) {
+                this.appendChild(document.querySelector('.invisible'));
+            });
+        });
+  
+        function dragOver(e) {
+            e.preventDefault();
+        }
+  
+        function dragEnter(e) {
+            e.preventDefault();
+            this.className += ' hovered';
+        }
+  
+        function dragLeave() {
+            if (this.classList.contains('placeholder')) {
+                this.className = 'placeholder';
+            } else {
+                this.className = 'sideboard';
+            }
+        }
+  
+        function dragDrop() {
+            this.className = 'placeholder';
+            if (this.childNodes.length === 0) {
+                const card = document.querySelector('.invisible');
+                this.append(card);
+            }
+        }
+    }
+  
+    // Call the setupDragAndDrop function to initialize the drag and drop logic
+    setupDragAndDrop();
+  
+    // TODO: Additional game logic can be added here...
+  
+  });
+  

@@ -1,21 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Puzzle Game</title>
     <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
-    <div class="info">
-        <span>Time: <span id="time">0</span></span>
-        <span>Actions: <span id="actions">0</span></span>
-    </div>
-    <div class="game">
-        <div class="unshuffled left"></div>
-        <div class="board"></div>
-        <div class="unshuffled right"></div>
+    <div class="game-container">
+
+        <!-- Display area for timer and moves -->
+        <div class="info">
+            <span id="time">0</span> seconds | <span id="actions">0</span> moves
+        </div>
+
+        <!-- Main board-container holding both sideboards and main board -->
+        <div class="board-container">
+            <!-- Sideboard for shuffled cards (top or left based on screen size) -->
+            <div class="sideboard top-left" id="sideboard-left"></div>
+
+            <!-- Main board for arranging cards -->
+            <div class="board" id="main-board"></div>
+
+            <!-- Sideboard for shuffled cards (bottom or right based on screen size) -->
+            <div class="sideboard bottom-right" id="sideboard-right"></div>
+        </div>
+
     </div>
     <script src="script.js"></script>
+
 </body>
+
 </html>
