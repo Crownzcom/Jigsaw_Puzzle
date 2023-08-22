@@ -359,3 +359,54 @@ function setupDragAndDrop() {
     }
 }
 
+====================================
+    <!-- Winning message modal -->
+    <div class="winning-modal" id="winningModal">
+         <div This div holds the other cards, and it has a white background, with all it's content centered. It takes on a width and hight of around 95% of the parent div. And it's children take on i think 95% of it's width, apart from the ones i have described>
+            <div This div has an orange back ground, and it takes on 100% of the width of the parent width, and all it's content is centered. And it's at the ver top of the parent div.>
+                            Win a Vacation to Dream Land! (This actually appears bigger)
+
+                Complete the puzzle faster than others and win a free trip for 2.
+
+                Copyright 2022. Interactive Content Builders. All rights reserved (This one is very small, i think it's around 10px font-size)
+            </div>
+            <div>
+                This holds an image of a joyous happy person. This divs hight is actually a bit greater than the width.
+            </div>
+            <div class="winning-message">
+                <div class="winning-header">
+                    <span>Your result: </span><span id="winningTime">00:35.04</span>
+                </div>
+                <p>Thank you for playing!</p>
+                <p>You have completed the puzzle.</p>
+                <p>Congratulations! Only time will tell if you’re one of the fastest 3 players.</p>
+                <button id="restartButton">Restart</button>
+            </div>
+
+            <div>
+                <div supposed to display top 5 results, but let's use dummy results for now. This part will actually be dynamically populated. I'll tell you later how the data will be stored>
+                    Best Results:
+                    ________________________________________________________________
+                    1   user-icon Name-1    timer for user-1
+                    ________________________________________________________________
+                    2   user-icon Name-2    timer for user-2
+                    ________________________________________________________________
+                    3   user-icon Name-3    timer for user-3
+                    ________________________________________________________________
+                    4   user-icon Name-4    timer for user-4
+                    ________________________________________________________________
+                    5   user-icon Name-5    timer for user-5
+
+                </div>
+                <div this displays the players results after the game and his/her position>
+                        Your result:
+                        ________________________________________________________________
+                        Position of the player   Player-icon        Name of the player      Timer for of the player
+                </div>
+             </div>
+        </div>
+    </div>
+
+    NOTE: The 'user-icon Name-1' will be a transparent user icon named 'user-icon Name-1.png' which saved in a /images folder. It will be round with an orange background color.
+
+    ========================================================

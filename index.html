@@ -9,6 +9,30 @@
 </head>
 
 <body>
+
+    <!-- Intro Modal -->
+    <div class="intro-modal" id="introModal">
+        <div class="modal-content">
+            <h2>Welcome to the Puzzle Game!</h2>
+            <p>Please enter your details to start:</p>
+            
+            <!-- Name input group -->
+            <div class="input-group">
+                <label for="userName">Name:</label>
+                <input type="text" id="userName" required>
+            </div>
+            
+            <!-- Email input group -->
+            <div class="input-group">
+                <label for="userEmail">Email:</label>
+                <input type="email" id="userEmail" required>
+            </div>
+            
+            <button id="startGameBtn" disabled>OK</button>
+        </div>
+    </div>
+
+    <!-- GAME CONTAINER -->
     <div class="game-container">
 
         <!-- Display area for timer and moves -->
@@ -29,6 +53,50 @@
         </div>
 
     </div>
+
+    <!-- Winning message modal -->
+    <div class="winning-modal" id="winningModal">
+        <div class="content-holder">
+            <div class="header-info">
+                <h2>Win a Vacation to Dream Land!</h2>
+                <p>Complete the puzzle faster than others and win a free trip for 2.</p>
+                <small>Copyright 2022. Interactive Content Builders. All rights reserved</small>
+            </div>
+
+            <div class="image-holder"></div>
+
+            <div class="winning-message">
+                <div class="winning-header">
+                    <span class="yourResultsText">Your result: </span><span id="winningTime">10:35.04</span>
+                </div>
+                <h2>Thank you for playing!</h2>
+                <p>You have completed the puzzle.</p>
+                <p>Congratulations! Only time will tell if you’re one of the fastest 3 players.</p>
+                <button id="restartButton">Restart</button>
+            </div>
+
+            <div class="results-holder">
+                <div class="top-results">
+                    <h3>Best Results:</h3>
+                    <div class="result-entry">
+                        <span>1</span> <img src="images/user-circle-o.png" alt="User 1"> <span>Name-1</span>
+                        <span>Timer for user-1</span>
+                    </div>
+                    <!-- ... Repeat for other users ... -->
+                </div>
+
+                <div class="player-result">
+                    <h3>Your result:</h3>
+                    <div class="result-entry">
+                        <span>Position of the player</span> <img src="images/user-circle-o.png" alt="Player">
+                        <span>Name of the player</span> <span>Timer of the player</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
     <script src="script.js"></script>
 
 </body>

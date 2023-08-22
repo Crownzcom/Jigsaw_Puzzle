@@ -2,39 +2,6 @@ let moveCount = 0;
 let timerInterval = null;
 let elapsedTime = 0;
 
-function updateMoveCount() {
-    const moveCounter = document.querySelector(".moves");
-    moveCounter.textContent = moveCount;
-}
-
-function formatTime(seconds) {
-    const hrs = Math.floor(seconds / 3600);
-    const mins = Math.floor((seconds % 3600) / 60);
-    const secs = seconds % 60;
-    
-    let timeString = '';
-    if (hrs > 0) {
-        timeString += `${String(hrs).padStart(2, '0')}:`;
-    }
-    timeString += `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
-    
-    return timeString;
-}
-
-function startTimer() {
-    if (!timerInterval) {
-        timerInterval = setInterval(function () {
-            elapsedTime++;
-            document.getElementById('time').textContent = formatTime(elapsedTime);
-        }, 1000);
-    }
-}
-
-function stopTimer() {
-    clearInterval(timerInterval);
-    timerInterval = null;
-}
-
 document.addEventListener("DOMContentLoaded", function () {
     // Shuffle function
     function shuffle(array) {
@@ -83,12 +50,97 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     setupDragAndDrop();
+
+    // Initialize the intro modal
+    initializeIntroModal();
 });
+
+function initializeIntroModal() {
+    // Show the intro modal on initial load
+    const introModal = document.getElementById('introModal');
+    introModal.style.display = 'flex';
+
+    const userName = document.getElementById('userName');
+    const userEmail = document.getElementById('userEmail');
+    const startGameBtn = document.getElementById('startGameBtn');
+
+    // Function to validate email
+    function validateEmail(email) {
+        const re = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+        return re.test(email);
+    }
+
+    // Function to check the form's validity
+    function checkFormValidity() {
+        if (userName.value && validateEmail(userEmail.value)) {
+            startGameBtn.disabled = false;
+        } else {
+            startGameBtn.disabled = true;
+        }
+    }
+
+    // Add event listeners to the input fields
+    userName.addEventListener('input', checkFormValidity);
+    userEmail.addEventListener('input', checkFormValidity);
+
+    startGameBtn.addEventListener('click', function() {
+        // Close the intro modal
+        introModal.style.display = 'none';
+    });
+}
+
+function updateMoveCount() {
+    const moveCounter = document.querySelector(".moves");
+    moveCounter.textContent = moveCount;
+}
+
+/* For the Counter*/
+function formatTime(seconds) {
+    const hrs = Math.floor(seconds / 3600);
+    const mins = Math.floor((seconds % 3600) / 60);
+    const secs = seconds % 60;
+    
+    let timeString = '';
+    if (hrs > 0) {
+        timeString += `${String(hrs).padStart(2, '0')}:`;
+    }
+    timeString += `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+    
+    return timeString;
+}
+
+/*For Winning modal*/
+function formatTimeForModal(seconds) {
+    const hrs = Math.floor(seconds / 3600);
+    const mins = Math.floor((seconds % 3600) / 60);
+    const secs = seconds % 60;
+
+    let hourMin = `${String(hrs).padStart(2, '0')}:${String(mins).padStart(2, '0')}.`;
+    return {
+        hourMin: hourMin,
+        seconds: String(secs).padStart(2, '0')
+    };
+}
+
+function startTimer() {
+    if (!timerInterval) {
+        timerInterval = setInterval(function () {
+            elapsedTime++;
+            document.getElementById('time').textContent = formatTime(elapsedTime);
+        }, 1000);
+    }
+}
+
+function stopTimer() {
+    clearInterval(timerInterval);
+    timerInterval = null;
+}
 
 function checkGameCompletion() {
     const mainBoardCards = document.querySelectorAll('#main-board .card');
     if (mainBoardCards.length === 16) {
         stopTimer();
+        showWinningModal()
     }
 }
 
@@ -193,4 +245,11 @@ function setupDragAndDrop() {
             checkGameCompletion();
         });
     });
+}
+
+function showWinningModal() {
+    const winningModal = document.querySelector('.winning-modal');
+    winningModal.style.display = 'flex';
+    const formattedTime = formatTimeForModal(elapsedTime);
+    document.getElementById('winningTime').innerHTML = `<span class="HoursMins">${formattedTime.hourMin}</span><span class="smaller-seconds">${formattedTime.seconds}</span>`;
 }

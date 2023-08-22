@@ -10,6 +10,68 @@ body {
     font-size: 14px;
 }
 
+/* INTRO MODAL STYLES */
+.intro-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000; /* Higher z-index to ensure it appears above other content */
+}
+
+.modal-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    width: 60%;
+    max-width: 80%;
+    text-align: center;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column; /* This will make the label appear above the input */
+    margin-bottom: 10px; /* Space between each input group */
+}
+
+.input-group label {
+    margin-bottom: 5px; /* Space between label and input */
+    text-align: left; /* Align the label to the left */
+}
+
+.input-group input {
+    width: 100%; /* Make the input take up full width */
+    padding: 10px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    box-sizing: border-box; /* This makes sure padding and border are included in the element's total width and height */
+}
+
+.modal-content button {
+    padding: 10px 20px;
+    border: none;
+    background-color: orange;
+    color: white;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+#startGameBtn {
+    cursor: pointer;
+    transition: opacity 0.3s; /* Smooth transition for opacity */
+}
+
+#startGameBtn:disabled {
+    opacity: 0.5; /* Make the button semi-transparent */
+    cursor: not-allowed; /* Change the cursor to indicate it's not clickable */
+}
+
+/*GAME CONTAINER STYLES*/
 .info {
     display: flex;
     justify-content: space-between;
@@ -79,6 +141,197 @@ body {
     background-color: #f5f5f5;  /* Lighter background color */
 }
 
+/* Winning Message Modal */
+/* General Modal Styles */
+.winning-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.678);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    display: none;
+    z-index: 1000;
+}
+
+/* Content Holder */
+.content-holder {
+    width: 60%;
+    height: 95%;
+    padding: 0% 1.7%;
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+/* Header Info */
+.header-info {
+    width: 109.4%;
+    margin-left: -1.7%;
+    margin-right: -1.7%;
+    color: #fff;
+    text-align: center;
+    background-color: orange;
+}
+
+.header-info h2 {
+    font-size: 20px;
+    margin-bottom: 0.5rem;
+}
+
+.header-info p {
+    font-size: 16px;
+    margin-bottom: 0.5rem;
+}
+
+.header-info small {
+    font-size: 10px;
+}
+
+/* Image Holder */
+.image-holder {
+    width: calc(50% + 3.4%); /* Added to account for padding */
+    padding-left: 1.7%; 
+    padding-right: 1.7%;
+    min-height: 120px;  /* Set a minimum height */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    z-index: 1;
+    background-image: url('images/dero.png');
+    background-size: contain; /*cover*/
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+/* Winning Message */
+.winning-message {
+    height: 40%; /* Adjusted height */
+    padding: 20px 25.2px; /* Adjusted for 1.7% of parent width */
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    position: relative;
+    text-align: center;
+    z-index: 2;
+}
+
+.winning-message p {
+    font-size: 15px;
+    font-weight: 200;
+    /* margin-bottom: 20px; */
+}
+
+/* Winning Header */
+.winning-header {
+    font-size: 18px;
+    font-weight: bold;
+    background-color: #ffffff;
+    padding: 10px 20px;
+    border-radius: 2px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.616);
+    position: absolute;
+    top: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.yourResultsText {
+    font-size: 0.8em;
+    color: rgb(120, 120, 120);
+    font-weight: lighter;
+    
+}
+
+.HoursMins {
+    /* font-size: 0.7em; */
+    font-weight: 400;
+}
+
+.smaller-seconds {
+    font-size: 0.7em;
+    color: rgb(120, 120, 120);
+    font-weight: lighter;
+}
+
+/* Restart Button */
+#restartButton {
+    font-size: 16px;
+    font-weight:lighter;
+    padding: 8px 25px;
+    background-color: #fff;
+    border: 1px solid rgba(128, 125, 125, 0.3);
+    border-radius: 0px;
+    box-shadow: 0px 0px 5px rgba(128, 125, 125, 0.3);
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+#restartButton:hover {
+    background-color: #f7f7f7;
+}
+
+/* Results Holder */
+.results-holder {
+    padding-left: 1.7%;
+    padding-right: 1.7%;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.top-results,
+.player-result {
+    width: 100%;
+    padding: 1rem;
+    text-align: center;
+    border-bottom: 2px solid black;
+}
+
+.top-results h3,
+.player-result h3 {
+    text-align: left;
+    margin-left: 1rem;
+}
+
+.result-entry {
+    width: 100%;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid grey;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.result-entry img {
+    width: 40px;
+    height: 40px;
+    background-color: orange;
+    border-radius: 50%;
+}
+
+/* Ensure content wraps properly */
+.winning-message, .result-entry {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+/* Specifically for the names in the result-entry, in case they are too long */
+.result-entry span {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
 /* Landscape Layout */
 @media screen and (min-width: 600px) {
     .board-container {
@@ -101,5 +354,20 @@ body {
 
     .board {
         margin: 20px 0;
+    }
+}
+
+/* Media Query for screens with width less than 800px */
+@media (max-width: 800px) {
+    .winning-message {
+        height: 20%; /* Adjusted height */
+    }
+    .content-holder {
+        width: 100%;
+        height: 100%;
+        padding: 5%; /* Adjust padding if needed */
+    }
+    .image-holder {
+        min-height: 150px;
     }
 }
