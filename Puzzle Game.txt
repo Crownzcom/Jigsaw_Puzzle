@@ -473,3 +473,6 @@ the below functions are other options to be used in the 'initializeRestartModal(
 // }
 
 ================================================================
+OpenAI application for VSCode:
+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
+================================================================

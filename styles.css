@@ -226,6 +226,7 @@ body {
 
 /* Winning Message */
 .winning-message {
+    width: 95%;
     height: 40%; /* Adjusted height */
     padding: 20px 25.2px; /* Adjusted for 1.7% of parent width */
     background-color: #fff;
@@ -293,6 +294,7 @@ body {
 
 /* Results Holder */
 .results-holder {
+    width: 95%;
     padding-left: 1.7%;
     padding-right: 1.7%;
     flex: 1;
@@ -323,6 +325,7 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    text-align: left;
 }
 
 .result-entry img {
@@ -342,6 +345,10 @@ body {
 .result-entry span {
     word-wrap: break-word;
     overflow-wrap: break-word;
+}
+
+.highlighted-player {
+    background-color: #ffd700;  /* This gives a gold background. You can adjust the color as per your preference */
 }
 
 /*

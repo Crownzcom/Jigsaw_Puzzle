@@ -16,13 +16,11 @@
             <h2>Welcome to the Puzzle Game!</h2>
             <p>Please enter your details to start:</p>
             
-            <!-- Name input group -->
             <div class="input-group">
                 <label for="userName">Name:</label>
                 <input type="text" id="userName" required>
             </div>
             
-            <!-- Email input group -->
             <div class="input-group">
                 <label for="userEmail">Email:</label>
                 <input type="email" id="userEmail" required>
@@ -35,20 +33,15 @@
     <!-- GAME CONTAINER -->
     <div class="game-container">
 
-        <!-- Display area for timer and moves -->
         <div class="info">
             <span id="time">0</span> seconds | <span class="moves" id="actions">0</span> moves
         </div>
 
-        <!-- Main board-container holding both sideboards and main board -->
         <div class="board-container">
-            <!-- Sideboard for shuffled cards (top or left based on screen size) -->
             <div class="sideboard top-left" id="sideboard-left"></div>
 
-            <!-- Main board for arranging cards -->
             <div class="board" id="main-board"></div>
 
-            <!-- Sideboard for shuffled cards (bottom or right based on screen size) -->
             <div class="sideboard bottom-right" id="sideboard-right"></div>
         </div>
 
@@ -82,7 +75,6 @@
                         <span>1</span> <img src="images/user-circle-o.png" alt="User 1"> <span>Name-1</span>
                         <span>Timer for user-1</span>
                     </div>
-                    <!-- ... Repeat for other users ... -->
                 </div>
 
                 <div class="player-result">
@@ -105,12 +97,4 @@
             <button id="restartSameEmail">Restart with Same Email</button>
             <button id="restartDiffEmail">Restart with Different Email</button>
         </div>
-</div>
-
-
-
-    <script src="script.js"></script>
-
-</body>
-
 </html>
