@@ -1,60 +1,24 @@
-let moveCount = 0;
-let timerInterval = null;
-let elapsedTime = 0;
+let moveCount = 0;  // Keeps track of the number of moves made so far
+let timerInterval = null; 
+let elapsedTime = 0;    // Keeps track of the time a player has taken so far
+let userEmailValue = '';  // To store the email of the player
 
 document.addEventListener("DOMContentLoaded", function () {
-    // Shuffle function
-    function shuffle(array) {
-        for (let i = array.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [array[i], array[j]] = [array[j], array[i]];
-        }
-    }
+    
+    // Initialize the game
+    resetGame();
 
-    // Get all card elements
-    let cards = [];
-    for (let i = 1; i <= 16; i++) {
-        let card = document.createElement('div');
-        card.classList.add('card');
-        card.setAttribute('data-id', i);
-        card.style.backgroundImage = 'url(images/' + i + '.jpg)';
-        cards.push(card);
-    }
-
-    // Shuffle the cards array
-    shuffle(cards);
-
-    // Append shuffled cards to sideboards alternately
-    const sideboardLeft = document.getElementById("sideboard-left");
-    const sideboardRight = document.getElementById("sideboard-right");
-
-    for (let i = 0; i < 8; i++) {
-        const placeholderLeft = document.createElement("div");
-        placeholderLeft.classList.add("placeholder");
-        sideboardLeft.appendChild(placeholderLeft);
-        placeholderLeft.appendChild(cards[i]);
-
-        const placeholderRight = document.createElement("div");
-        placeholderRight.classList.add("placeholder");
-        sideboardRight.appendChild(placeholderRight);
-        placeholderRight.appendChild(cards[i + 8]);
-    }
-
-    // Create placeholders for the main board
-    const board = document.getElementById("main-board");
-    for (let i = 1; i <= 16; i++) {
-        const placeholder = document.createElement("div");
-        placeholder.classList.add("placeholder");
-        placeholder.setAttribute("data-id", i);
-        board.appendChild(placeholder);
-    }
-
+    //Enables Drga and Drop
     setupDragAndDrop();
 
     // Initialize the intro modal
     initializeIntroModal();
+
+    // Initialize the restart modal
+    initializeRestartModal();
 });
 
+//Initialize the intro modal
 function initializeIntroModal() {
     // Show the intro modal on initial load
     const introModal = document.getElementById('introModal');
@@ -84,17 +48,90 @@ function initializeIntroModal() {
     userEmail.addEventListener('input', checkFormValidity);
 
     startGameBtn.addEventListener('click', function() {
+        
+        // Store the user's email value
+        userEmailValue = userEmail.value;
+        
         // Close the intro modal
         introModal.style.display = 'none';
     });
 }
 
-function updateMoveCount() {
-    const moveCounter = document.querySelector(".moves");
-    moveCounter.textContent = moveCount;
+//Initialize the Game
+function resetGame() {
+    // Shuffle function
+    function shuffle(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+    }
+
+    // Get all card elements
+    let cards = [];
+    for (let i = 1; i <= 16; i++) {
+        let card = document.createElement('div');
+        card.classList.add('card');
+        card.setAttribute('data-id', i);
+        card.style.backgroundImage = 'url(images/' + i + '.jpg)';
+        cards.push(card);
+    }
+
+    // Shuffle the cards array
+    shuffle(cards);
+
+    // Clear existing cards and placeholders
+    document.getElementById("sideboard-left").innerHTML = '';
+    document.getElementById("sideboard-right").innerHTML = '';
+    document.getElementById("main-board").innerHTML = '';
+
+    // Append shuffled cards to sideboards alternately
+    const sideboardLeft = document.getElementById("sideboard-left");
+    const sideboardRight = document.getElementById("sideboard-right");
+
+    for (let i = 0; i < 8; i++) {
+        const placeholderLeft = document.createElement("div");
+        placeholderLeft.classList.add("placeholder");
+        sideboardLeft.appendChild(placeholderLeft);
+        placeholderLeft.appendChild(cards[i]);
+
+        const placeholderRight = document.createElement("div");
+        placeholderRight.classList.add("placeholder");
+        sideboardRight.appendChild(placeholderRight);
+        placeholderRight.appendChild(cards[i + 8]);
+    }
+
+    // Create placeholders for the main board
+    const board = document.getElementById("main-board");
+    for (let i = 1; i <= 16; i++) {
+        const placeholder = document.createElement("div");
+        placeholder.classList.add("placeholder");
+        placeholder.setAttribute("data-id", i);
+        board.appendChild(placeholder);
+    }
+
+    // Reinitialize the drag and drop functionality
+    setupDragAndDrop();
+
+    // Reset other game state variables
+    elapsedTime = 0;
+    moveCount = 0;
+    document.getElementById('time').textContent = formatTime(elapsedTime);
+    updateMoveCount();
+    stopTimer();  // Ensure timer is stopped
 }
 
-/* For the Counter*/
+//For Starting the timer when the game starts
+function startTimer() {
+    if (!timerInterval) {
+        timerInterval = setInterval(function () {
+            elapsedTime++;
+            document.getElementById('time').textContent = formatTime(elapsedTime);
+        }, 1000);
+    }
+}
+
+/* For outputing the appropriate time format to the Counter*/
 function formatTime(seconds) {
     const hrs = Math.floor(seconds / 3600);
     const mins = Math.floor((seconds % 3600) / 60);
@@ -109,7 +146,20 @@ function formatTime(seconds) {
     return timeString;
 }
 
-/*For Winning modal*/
+/* For outputing the appropriate time format of the player to be submitted to the backend through POST*/
+function formatTimePlayerScore(seconds) {
+    const hrs = Math.floor(seconds / 3600);
+    const mins = Math.floor((seconds % 3600) / 60);
+    const secs = seconds % 60;
+    
+    let timeString = '';
+
+    timeString += `${String(hrs).padStart(2, '0')}:${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+    
+    return timeString;
+}
+
+/*For outputing the appropriate time format to the Winning modal*/
 function formatTimeForModal(seconds) {
     const hrs = Math.floor(seconds / 3600);
     const mins = Math.floor((seconds % 3600) / 60);
@@ -122,28 +172,35 @@ function formatTimeForModal(seconds) {
     };
 }
 
-function startTimer() {
-    if (!timerInterval) {
-        timerInterval = setInterval(function () {
-            elapsedTime++;
-            document.getElementById('time').textContent = formatTime(elapsedTime);
-        }, 1000);
-    }
-}
-
+//For stopping the timer when the game has ended successfully
 function stopTimer() {
     clearInterval(timerInterval);
     timerInterval = null;
 }
 
+//For updating the move counts
+function updateMoveCount() {
+    const moveCounter = document.querySelector(".moves");
+    moveCounter.textContent = moveCount;
+}
+
+// Checks if all the cards have been placed correctly on the board
 function checkGameCompletion() {
     const mainBoardCards = document.querySelectorAll('#main-board .card');
     if (mainBoardCards.length === 16) {
         stopTimer();
+        const userName = document.getElementById('userName').value;
+        const userEmail = document.getElementById('userEmail').value;
+
+        const userScore =  formatTimePlayerScore(elapsedTime);
+        console.log('User score time with  formatTimePlayerScore(): '+ userScore);
+        
+        savePlayerScore(userName, userEmail, userScore);
         showWinningModal()
     }
 }
 
+//Sets up the drag and drop functionality on devices that support touch devices, and those that use a mouse
 function setupDragAndDrop() {
     const cards = document.querySelectorAll('.card');
     const placeholders = document.querySelectorAll('.placeholder');
@@ -247,9 +304,87 @@ function setupDragAndDrop() {
     });
 }
 
+//This function displays the winning modal when the game is completed
 function showWinningModal() {
     const winningModal = document.querySelector('.winning-modal');
     winningModal.style.display = 'flex';
     const formattedTime = formatTimeForModal(elapsedTime);
     document.getElementById('winningTime').innerHTML = `<span class="HoursMins">${formattedTime.hourMin}</span><span class="smaller-seconds">${formattedTime.seconds}</span>`;
+}
+
+//This is for Restarting the game. It's activated when the restart button is clicked on the winnining modal.
+function initializeRestartModal() {
+    const winningModal = document.querySelector('.winning-modal');
+    const restartModal = document.getElementById('restartModal');
+    const sameEmailBtn = document.getElementById('restartSameEmail');
+    const diffEmailBtn = document.getElementById('restartDiffEmail');
+
+    document.getElementById('restartButton').addEventListener('click', function() {
+        winningModal.style.display = 'none'; // Hide the Win modal
+
+        restartModal.style.display = 'flex';  // Show the restart modal
+    });
+
+    sameEmailBtn.addEventListener('click', function() {
+        restartModal.style.display = 'none';  // Hide the restart modal
+        resetGame();
+        console.log(userEmailValue); // Checking whether the user email is actually saved. This isjust for debugging purposes
+    });
+
+    diffEmailBtn.addEventListener('click', function() {
+        restartModal.style.display = 'none';  // Hide the restart modal
+        document.getElementById('introModal').style.display = 'flex';  // Show the intro modal to get new details
+    });
+}
+
+/*Function to send player's data to the backend through POST and receive back a response*/
+function savePlayerScore(name, email, time) {
+    const endpoint = "https://puzzle-game.derrickmal123.workers.dev/";  // Replace with your Cloudflare Worker's URL
+    const data = {
+        name: name,
+        email: email,
+        scores: time
+    };
+
+    fetch(endpoint, {
+        method: "POST",
+        body: JSON.stringify(data),
+        headers: {
+            "Content-Type": "application/json"
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === "success") {
+            console.log("Score saved successfully!");
+
+            // Display the top 5 scores
+            displayTopScores(data.top5);
+        } else {
+            console.error("Error saving score:", data.message);
+        }
+    })
+    .catch(error => {
+        console.error("Error sending score:", error);
+    });
+}
+
+/* Function to display top 5 players*/
+function displayTopScores(scores) {
+    const topResultsDiv = document.querySelector('.top-results');
+    // Clear previous results
+    const existingEntries = topResultsDiv.querySelectorAll('.result-entry');
+    existingEntries.forEach(entry => entry.remove());
+
+    scores.forEach(score => {
+        const entry = document.createElement('div');
+        entry.className = 'result-entry';
+        entry.innerHTML = `
+            <span>${score.position}</span>
+            <img src="images/user-circle-o.png" alt="User ${score.position}">
+            <span>${score.name}</span>
+            <span>${score.scores}</span>
+        `;
+        topResultsDiv.appendChild(entry);
+    });
 }

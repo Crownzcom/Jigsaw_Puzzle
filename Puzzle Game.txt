@@ -410,3 +410,63 @@ function setupDragAndDrop() {
     NOTE: The 'user-icon Name-1' will be a transparent user icon named 'user-icon Name-1.png' which saved in a /images folder. It will be round with an orange background color.
 
     ========================================================
+    we are going to setup a backend, but by harnessing the power of serverless computing, for this case, we'll use cloudlfare workers. And the data will be saved in a google sheet, where we'll write a Google Apps Script (GAS) that's used to receive data from the cloudflare and write the data to the google sheet. Below is how it'll work:
+    1 - Setup a cloudflare worker that receives data (Name, Email, and Scores) from the front-end which is sent to the Google Apps Script (GAS), and then it responds with data (Postion, Name, Scores) from the Google Apps Script (GAS)
+    2 -  we shall create a google sheet with 2 columns named 'Name', 'Email' and 'Scores'. The 'Name' holds the name of the player and 'Email' too which are submited through the intro modal. The 'Scores' holds the time a player took to finish the game. The 'Name', 'Email' and 'Scores' are submitted after the player has finished to play the game.
+    3 - The Google Apps Script (GAS) script receives data from the cloudflare worker (Name, Email, and Scores) then writes data received to the google sheet, and it also fetches the top 5 players from the list with their details (Position, Name, and Scores) implying that the calculation to determine the best players is carried out in the GAS, which are sent back to the cloudflare worker
+
+================================================================
+test1
+https://script.google.com/macros/s/AKfycbwUyZqJdFYwwrrnSlRt-u16I_1Zex4rupQAalLVfKWJgzJoTN5Ur9qAV-tpu8TNDzqq/exec
+
+test2
+https://script.google.com/macros/s/AKfycbxvWkX1aINHNa0flKszXhd4YIqZ7sFQQHz0tZXs8pDv6a4rsF1jdN5LWN58iMzVT5LH/exec
+
+test3 (with email search improvements)
+https://script.google.com/macros/s/AKfycbxj3abzYXfeBTD-9YbBnglOwsNztb52xFZlBNeSfnfOYjvvBhT03HFT7lBEy8dtFP8/exec
+
+test4
+https://script.google.com/macros/s/AKfycbwg_1VZTNeqU6wYC6oHOta-C8IWgiKpSeucRAIcVYCzDJ7yf85ML_xKzbimTxVI9LSI/exec
+
+test5 (Added a new column 'Scores(Hours:Minutes:Seconds)')
+https://script.google.com/macros/s/AKfycby329lPnUxkowk2C_JpmSzHZLR-8Di7mQWxo4hJspVjtKo-4pyVvZatDrIG-0isIhwV/exec
+
+test6
+https://script.google.com/macros/s/AKfycbxDTpPqWR520vV95XqSflaoGqWOF0Dv2ReDx-cD8WqedHTVwJg0dWMxkxftav30XkDU/exec
+
+test7 (With error catch capabilities)
+https://script.google.com/macros/s/AKfycby6mt1azdIxtrVbRIe_hndbSJIR7Vqt7Mknjx831T3c_vDNbHhoKKTq1eVM7UM0MmTw/exec
+
+test8
+https://script.google.com/macros/s/AKfycbxWt4Yzvkr8aHVAgehbr48FsLP-RIXqOy__uYjNJkIaRyFOu8W2OIrsMkHmi_Rqh-ui/exec
+================================================================
+wonderful, and thanks.
+so, i was thinking, what the same person plays the game several times, ofcourse this means the details will be repeated. what ideas do you have to cater for such issues?
+================================================================
+the below functions are other options to be used in the 'initializeRestartModal()' function:
+
+// function showRestartModal() {
+//     const restartModal = document.getElementById('restartModal');
+//     restartModal.style.display = 'flex';
+// }
+
+// function hideRestartModal() {
+//     const restartModal = document.getElementById('restartModal');
+//     restartModal.style.display = 'none';
+// }
+
+// function restartWithSameEmail() {
+//     // Logic to restart the game with the same email
+//     resetGame();
+// }
+
+// function restartWithDifferentEmail() {
+//     // Show the intro modal to let the user enter a different email
+//     const introModal = document.getElementById('introModal');
+//     introModal.style.display = 'flex';
+
+//     // Logic to restart the game
+//     resetGame();
+// }
+
+================================================================
