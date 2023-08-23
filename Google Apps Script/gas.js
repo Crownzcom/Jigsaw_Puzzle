@@ -27,22 +27,20 @@ function validateRequest(e) {
 
 function writeToSheet(data) {
     const sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
-    const records = sheet.getRange(2, 1, sheet.getLastRow(), 4).getValues(); // Updated range to consider the new column
+    const records = sheet.getRange(2, 1, sheet.getLastRow(), 4).getValues();
     
     const existingRecordIndex = records.findIndex(record => record[1] === data.email);
     const scoresInSeconds = timeToSeconds(data.scores);
-    const scoresInHMS = secondsToTime(scoresInSeconds);  // Convert the scores to HH:MM:SS format
+    const scoresInHMS = secondsToTime(scoresInSeconds);  
 
     if (existingRecordIndex !== -1) {
-        // Email found
         const existingScore = records[existingRecordIndex][2];
 
-        if (scoresInSeconds < existingScore) { // Check if the new score is better (lower time)
-            sheet.getRange(existingRecordIndex + 2, 3).setValue(scoresInSeconds); // Update only the score
-            sheet.getRange(existingRecordIndex + 2, 4).setValue(scoresInHMS); // Update the HH:MM:SS format score
+        if (scoresInSeconds < existingScore) { 
+            sheet.getRange(existingRecordIndex + 2, 3).setValue(scoresInSeconds);
+            sheet.getRange(existingRecordIndex + 2, 4).setValue(scoresInHMS);
         }
     } else {
-        // Email not found, append new data
         sheet.appendRow([data.name, data.email, scoresInSeconds, scoresInHMS]);
     }
 }
@@ -50,8 +48,8 @@ function writeToSheet(data) {
 function fetchTop5() {
     const sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
     const rows = sheet.getDataRange().getValues();
-    rows.shift();  // remove header row
-    rows.sort((a, b) => a[2] - b[2]);  // Sort by scores in ascending order
+    rows.shift();
+    rows.sort((a, b) => a[2] - b[2]);
 
     return rows.slice(0, 5).map((row, index) => {
         return {
@@ -62,17 +60,40 @@ function fetchTop5() {
     });
 }
 
+function findPlayerPosition(email) {
+    const sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+    const rows = sheet.getDataRange().getValues();
+    rows.shift();
+    rows.sort((a, b) => a[2] - b[2]);
+
+    for(let i = 0; i < rows.length; i++) {
+        if(rows[i][1] === email) {
+            return i + 1;
+        }
+    }
+    return -1;
+}
+
 function doPost(e) {
     const data = validateRequest(e);
     
     if (!data) {
-        return ContentService.createTextOutput("Invalid request")
-            .setMimeType(ContentService.MimeType.TEXT);
+        return ContentService.createTextOutput(JSON.stringify({
+            "status": "error",
+            "message": "Invalid request data",
+            "top5": [],
+            "playerPosition": -1
+        })).setMimeType(ContentService.MimeType.JSON);
     }
 
     writeToSheet(data);
     const top5 = fetchTop5();
+    const playerPosition = findPlayerPosition(data.email);
 
-    return ContentService.createTextOutput(JSON.stringify(top5))
-        .setMimeType(ContentService.MimeType.JSON);
+    return ContentService.createTextOutput(JSON.stringify({
+        "status": "success",
+        "message": "Data submitted successfully",
+        "top5": top5,
+        "playerPosition": playerPosition
+    })).setMimeType(ContentService.MimeType.JSON);
 }

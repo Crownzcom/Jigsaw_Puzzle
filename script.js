@@ -360,6 +360,15 @@ function savePlayerScore(name, email, time) {
 
             // Display the top 5 scores
             displayTopScores(data.top5);
+
+            //Displa Player's Position
+             const playerResultSection = document.querySelector('.player-result .result-entry');
+             console.log(data.playerPosition); //Display the player's position
+             playerResultSection.querySelector('span:nth-child(1)').textContent = data.playerPosition;  // Set the player's position
+             playerResultSection.querySelector('span:nth-child(3)').textContent = name;           // Set the player's name
+             playerResultSection.querySelector('span:nth-child(4)').textContent = time;          // Set the player's timer
+
+
         } else {
             console.error("Error saving score:", data.message);
         }

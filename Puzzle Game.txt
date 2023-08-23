@@ -439,6 +439,9 @@ https://script.google.com/macros/s/AKfycby6mt1azdIxtrVbRIe_hndbSJIR7Vqt7Mknjx831
 
 test8
 https://script.google.com/macros/s/AKfycbxWt4Yzvkr8aHVAgehbr48FsLP-RIXqOy__uYjNJkIaRyFOu8W2OIrsMkHmi_Rqh-ui/exec
+
+test9 (also returns the top5)
+https://script.google.com/macros/s/AKfycbym4HNuTxddzhWgX6WzKuAG-4ROODRdIa3BmS7oiFxmTMaV0NGOKZBsDd0Jua3YAD0/exec
 ================================================================
 wonderful, and thanks.
 so, i was thinking, what the same person plays the game several times, ofcourse this means the details will be repeated. what ideas do you have to cater for such issues?
