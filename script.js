@@ -1,3 +1,12 @@
+/**
+ * This code snippet is a JavaScript implementation of a puzzle game. 
+ * It includes functions for initializing the game, handling user input, tracking game state, and providing drag and drop functionality for cards on the game board. It also includes functions for starting and stopping a timer, formatting time values, checking game completion, and saving player scores. 
+ * The code initializes the game by shuffling the cards and setting up the drag and drop functionality. It displays an intro modal for the user to enter their name and email, and starts the game when the start button is clicked. The game board is cleared and new cards are created and shuffled. 
+ * Placeholders for the main board and sideboards are created, and the shuffled cards are appended to the sideboards. The drag and drop functionality is reinitialized. The timer starts when a card is dragged, and the move count is updated when a card is dropped. 
+ * The game completion is checked when all cards are placed correctly on the board. The winning modal is displayed when the game is completed, and the player's score is saved and displayed. 
+ * The restart modal allows the game to be restarted with the same or a different email address. 
+ * The player's score is sent to the backend through a POST request, and the top 5 scores are displayed.
+ */
 let moveCount = 0 // Keeps track of the number of moves made so far
 let timerInterval = null
 let elapsedTime = 0 // Keeps track of the time a player has taken so far
@@ -413,21 +422,28 @@ function savePlayerScore (name, email, time) {
 }
 
 /* Function to display top 5 players*/
-function displayTopScores (scores) {
-  const topResultsDiv = document.querySelector('.top-results')
+function displayTopScores(scores) {
+  const topResultsDiv = document.querySelector('.top-results');
   // Clear previous results
-  const existingEntries = topResultsDiv.querySelectorAll('.result-entry')
-  existingEntries.forEach(entry => entry.remove())
+  const existingEntries = topResultsDiv.querySelectorAll('.result-entry');
+  existingEntries.forEach(entry => entry.remove());
 
   scores.forEach(score => {
-    const entry = document.createElement('div')
-    entry.className = 'result-entry'
-    entry.innerHTML = `
-            <span>${score.position}</span>
-            <img src="images/user-circle-o.png" alt="User ${score.position}">
-            <span>${score.name}</span>
-            <span>${score.scores}</span>
-        `
-    topResultsDiv.appendChild(entry)
-  })
+      const entry = document.createElement('div');
+      entry.className = 'result-entry';
+      
+      // Check if the current top player's email matches the player's email
+      if (score.email === userEmailValue) {
+          entry.classList.add('highlighted-player');
+      }
+
+      entry.innerHTML = `
+          <span>${score.position}</span>
+          <img src="images/user-circle-o.png" alt="User ${score.position}">
+          <span>${score.name}</span>
+          <span>${score.scores}</span>
+      `;
+      topResultsDiv.appendChild(entry);
+  });
 }
+
