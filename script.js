@@ -359,6 +359,7 @@ function initializeRestartModal () {
 
   diffEmailBtn.addEventListener('click', function () {
     restartModal.style.display = 'none' // Hide the restart modal
+    resetGame()
     document.getElementById('introModal').style.display = 'flex' // Show the intro modal to get new details
   })
 }
@@ -413,14 +414,39 @@ function savePlayerScore (name, email, time) {
 }
 
 /* Function to display top 5 players*/
+// function displayTopScores(scores) {
+//   const topResultsDiv = document.querySelector('.top-results');
+//   // Clear previous results
+//   const existingEntries = topResultsDiv.querySelectorAll('.result-entry');
+//   existingEntries.forEach(entry => entry.remove());
+
+//   scores.forEach(score => {
+//       const entry = document.createElement('div');
+//       entry.className = 'result-entry';
+      
+//       // Check if the current top player's email matches the player's email
+//       if (score.email === userEmailValue) {
+//           entry.classList.add('highlighted-player');
+//       }
+
+//       entry.innerHTML = `
+//           <span>${score.position}</span>
+//           <img src="images/user-circle-o.png" alt="User ${score.position}">
+//           <span>${score.name}</span>
+//           <span>${score.scores}</span>
+//       `;
+//       topResultsDiv.appendChild(entry);
+//   });
+// }
+
 function displayTopScores(scores) {
-  const topResultsDiv = document.querySelector('.top-results');
+  const topResultsTable = document.querySelector('.results-table tbody');
   // Clear previous results
-  const existingEntries = topResultsDiv.querySelectorAll('.result-entry');
+  const existingEntries = topResultsTable.querySelectorAll('.result-entry');
   existingEntries.forEach(entry => entry.remove());
 
   scores.forEach(score => {
-      const entry = document.createElement('div');
+      const entry = document.createElement('tr');
       entry.className = 'result-entry';
       
       // Check if the current top player's email matches the player's email
@@ -429,12 +455,13 @@ function displayTopScores(scores) {
       }
 
       entry.innerHTML = `
-          <span>${score.position}</span>
-          <img src="images/user-circle-o.png" alt="User ${score.position}">
-          <span>${score.name}</span>
-          <span>${score.scores}</span>
+          <td><span>${score.position}</span></td>
+          <td><img src="images/user-circle-o.png" alt="User ${score.position}"></td>
+          <td><span>${score.name}</span></td>
+          <td><span>${score.scores}</span></td>
       `;
-      topResultsDiv.appendChild(entry);
+      topResultsTable.appendChild(entry);
   });
 }
+
 

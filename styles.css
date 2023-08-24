@@ -80,47 +80,102 @@ body {
 ...Game Container... 
 ----------------------------------------------------------------
 */
-.info {
-    display: flex;
-    justify-content: space-between;
-    width: 420px;
-    margin: 20px auto;
-}
 
 .game-container {
     display: flex;
     flex-direction: column;
     align-items: center;
     height: 90vh;
-    width: 100%;
+    width: 50%;
     max-width: 1200px;
     margin: 2rem auto;
     position: relative;
 }
 
+.info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin: 20px auto;
+    padding: 10px 20px;
+    border-radius: 20px;
+    background-color: #ffffff;
+    box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.1);
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.info > div {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.info i.fas.fa-stopwatch {
+    font-size: 20px;
+    color: #333;
+}
+
+.info span.label {
+    color: #888;
+    margin-right: 10px;
+}
+
+.info span {
+    margin: 0 5px;
+}
+
 .board {
     display: grid;
-    grid-gap: 5px;
-    width: 340px;
-    height: 340px;
-    padding: 5px;
-    border: 2px solid #f09b1c;
+    grid-area: auto;
+    gap: 5px;
+    margin: -5px;  /* Negative margin equal to the gap size */
+    /* width: 350px;
+    height: 350px; */
+    /* width: 100%; */
+    height: 100%;
+    border: 3.5px solid #f09b1c;
+    border-radius: 2%;
     grid-template-columns: repeat(4, 80px);
+    grid-template-rows: repeat(4, 1fr);  /* Change to 1fr */
+    /* grid-template-rows: repeat(4, 80px); */
+
+    justify-content: center;
+    align-content: center;
 }
 
 .sideboard {
     display: grid;
+    grid-area: auto;
     gap: 5px;
-    width: 170px;
-    height: 340px;
+    margin: -5px;  /* Negative margin equal to the gap size */
+    /* width: 350px;
+    height: 350px; */
+    width: 100%;
+    height: 100%;
+    border: 2px solid #ffffff;
+    border-radius: 2%;
     grid-template-columns: repeat(2, 80px);
-    grid-template-rows: repeat(4, 80px);
+    grid-template-rows: repeat(4, 1fr);  /* Change to 1fr */
+
+    justify-content: center;
+    align-content: center;
 }
 
 .board-container {
+    width: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
+    gap: 15px;
+    margin: 2px;
+}
+
+.placeholder {
+    border: 1px solid #5f5e5e;  /* Adjusted border */
+    border-radius: 2px;  /* Added rounded corners */
+    background-color: #f5f5f5;  /* Lighter background color */
 }
 
 .card, .placeholder {
@@ -129,13 +184,21 @@ body {
     border: 1px solid #5f5e5e;
     background-color: #fff;
     transition: all 0.2s;
+    
 }
 
 .card {
+    /* width: 100%; */
     cursor: pointer;
     background-size: cover;
     background-position: center;
     border: none;
+}
+
+.card::before {
+    content: "";
+    display: block;
+    padding-top: 100%;  /* This ensures a 1:1 aspect ratio */
 }
 
 .card.is-dragging {
@@ -143,12 +206,32 @@ body {
     z-index: 1000;
 }
 
-.placeholder {
-    border: 2px solid #5f5e5e;  /* Adjusted border */
-    border-radius: 5px;  /* Added rounded corners */
-    background-color: #f5f5f5;  /* Lighter background color */
+/* Remove top border for the topmost placeholders */
+.placeholder:nth-child(-n+4) {
+    border-top: none;
 }
 
+/* Remove bottom border for the bottommost placeholders */
+.placeholder:nth-child(n+13) {
+    border-bottom: none;
+}
+
+/* Remove right border for every 4th placeholder */
+.placeholder:nth-child(4n) {
+    border-right: solid 1px #f09b1c;
+}
+
+/* Remove left border for every 1st placeholder after the 4th */
+.placeholder:nth-child(4n+1) {
+    border-left: none;
+}
+
+
+.sideboard .placeholder{
+    border: 1px solid #ffffff;  /* Adjusted border */
+    border-radius: 2px;  /* Added rounded corners */
+    background-color: #f5f5f5;  /* Lighter background color */
+}
 /*
 ----------------------------------------------------------------
 ...Winning Modal... 
@@ -318,21 +401,75 @@ body {
     margin-left: 1rem;
 }
 
+.results-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
 .result-entry {
+    justify-content: flex-start !important;
     width: 100%;
     padding: 0.5rem 0;
     border-bottom: 1px solid grey;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    border-bottom: 1px solid grey;
+}
+
+.result-entry td {
+    padding: 0.5rem 1rem; /* adjusted for table cells */
     text-align: left;
 }
 
-.result-entry img {
+/* .result-entry span:nth-child(1) {   
+    flex: 1;
+} */
+
+.result-entry img {  
     width: 40px;
     height: 40px;
     background-color: orange;
-    border-radius: 50%;
+    border-radius: 100%;
+}
+
+.result-entry span:nth-child(3) {  
+    flex: 3;  
+}
+
+.result-entry span:nth-child(4) {   
+    flex: 2;
+}
+
+.result-entry > * {
+    padding: 0 1rem;  
+}
+
+.results-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.results-table th, .results-table td {
+    padding: 0.5rem 1rem; /* adjusted for table cells */
+    text-align: left;
+}
+
+/* Column widths */
+.results-table td:nth-child(1) { /* Position column */
+    width: 10%; /* For position which is likely a smaller number */
+}
+
+.results-table td:nth-child(2) { /* Image column */
+    width: 15%; /* For the image */
+}
+
+.results-table td:nth-child(3) { /* Name column */
+    width: 50%; /* For the player's name which might be longer */
+}
+
+.results-table td:nth-child(4) { /* Score column */
+    width: 25%; /* For the player's score */
 }
 
 /* Ensure content wraps properly */
@@ -348,7 +485,7 @@ body {
 }
 
 .highlighted-player {
-    background-color: #ffd700;  /* This gives a gold background. You can adjust the color as per your preference */
+    background-color: orange;  /* Adjust the color as per your preference */
 }
 
 /*
@@ -408,8 +545,10 @@ body {
     }
 
     .sideboard {
-        width: 340px;
-        height: 170px;
+        /* width: 340px;
+        height: 170px; */
+        width: 100%;
+        height: 100%;
         grid-template-columns: repeat(4, 80px);
         grid-template-rows: repeat(2, 80px);
     }

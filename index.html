@@ -5,6 +5,7 @@
     <meta charset="UTF-8"> <!-- Character encoding for the HTML document -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Making the webpage responsive -->
     <title>Puzzle Game</title> <!-- Title of the webpage -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="styles.css"> <!-- Linking the CSS file -->
 </head>
 
@@ -36,10 +37,17 @@
     <div class="game-container"> <!-- Main container for the game -->
 
         <!-- Display area for timer and moves -->
-        <div class="info"> <!-- Information about time and moves -->
-            <span id="time">0</span> seconds | <span class="moves" id="actions">0</span> moves <!-- Displaying time and moves -->
+        <div class="info">
+            <div class="moves-info">
+                <span class="label">Number of Actions:</span>
+                <span class="moves" id="actions">0</span>
+            </div>
+            <div class="time-info">
+                <i class="fas fa-stopwatch"></i>
+                <span class="label">:</span>
+                <span id="time">0</span>
+            </div>
         </div>
-
         <!-- Main board-container holding both sideboards and main board -->
         <div class="board-container"> <!-- Container for the game board -->
             <!-- Sideboard for shuffled cards (top or left based on screen size) -->
@@ -78,10 +86,22 @@
             <div class="results-holder"> <!-- Holder for the results -->
                 <div class="top-results"> <!-- Top results -->
                     <h3>Best Results:</h3> <!-- Heading for the best results -->
-                    <div class="result-entry"> <!-- Entry for the result -->
-                        <span>1</span> <img src="images/user-circle-o.png" alt="User 1"> <span>Name-1</span> <!-- Displaying the user and their position -->
-                        <span>Timer for user-1</span> <!-- Displaying the timer for the user -->
-                    </div>
+                    <!--<div class="result-entry"> -->
+                        <!--<span>1</span> <img src="images/user-circle-o.png" alt="User 1"> <span>Name-1</span> -->
+                        <!--<span>Timer for user-1</span> -->
+                    <!-- </div> -->
+                    <table class="results-table">
+                        <tbody>
+                            <tr class="result-entry">
+                                <td><span>1</span></td>
+                                <td><img src="images/user-circle-o.png" alt="User 1"></td>
+                                <td><span>Name-1</span></td>
+                                <td><span>Timer for user-1</span></td>
+                            </tr>
+                            <!-- ... Repeat for other users ... -->
+                        </tbody>
+                    </table>
+                    
                     <!-- ... Repeat for other users ... -->
                 </div>
 
