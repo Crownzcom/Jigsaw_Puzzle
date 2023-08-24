@@ -1,3 +1,0 @@
-FINISHED *** .image-holder {width: 50%;} //Adjust width on different scren sizes. 50% for portrait and 20% for landscape
-May be we could hide the gamecontainer when the games is done
-Chabge color of buttons on the restart modal window
