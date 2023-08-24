@@ -7,6 +7,7 @@
  * The restart modal allows the game to be restarted with the same or a different email address. 
  * The player's score is sent to the backend through a POST request, and the top 5 scores are displayed.
  */
+
 let moveCount = 0 // Keeps track of the number of moves made so far
 let timerInterval = null
 let elapsedTime = 0 // Keeps track of the time a player has taken so far
