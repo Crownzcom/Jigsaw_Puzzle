@@ -2,7 +2,7 @@ addEventListener("fetch", (event) => {
     event.respondWith(handleRequest(event.request));
   });
   
-  const GAS_URL = "https://script.google.com/macros/s/AKfycbwc6ogM0tIJfEkvWh_m8ROUmOorQdaxHUwO_TBdcOjyU64rKCenhhGUfBWxuCvbiPCG/exec";
+  const GAS_URL = "ENTER_GOOGLE_APPS_SCRIPT_URL";
   
   async function handleRequest(request) {
     if (request.method === "OPTIONS") {
