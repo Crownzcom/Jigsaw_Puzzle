@@ -1,87 +1,95 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html> <!-- Defines the document type and version of HTML -->
+<html lang="en"> <!-- Language of the document is English -->
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Puzzle Game</title>
-    <link rel="stylesheet" href="styles.css">
+<head> <!-- Head section of the HTML document -->
+    <meta charset="UTF-8"> <!-- Character encoding for the HTML document -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Making the webpage responsive -->
+    <title>Puzzle Game</title> <!-- Title of the webpage -->
+    <link rel="stylesheet" href="styles.css"> <!-- Linking the CSS file -->
 </head>
 
-<body>
+<body> <!-- Body section of the HTML document -->
 
     <!-- Intro Modal -->
-    <div class="intro-modal" id="introModal">
-        <div class="modal-content">
-            <h2>Welcome to the Puzzle Game!</h2>
-            <p>Please enter your details to start:</p>
+    <div class="intro-modal" id="introModal"> <!-- Modal for introduction -->
+        <div class="modal-content"> <!-- Content of the modal -->
+            <h2>Welcome to the Puzzle Game!</h2> <!-- Welcome message -->
+            <p>Please enter your details to start:</p> <!-- Instruction for the user -->
             
-            <div class="input-group">
-                <label for="userName">Name:</label>
-                <input type="text" id="userName" required>
+            <!-- Name input group -->
+            <div class="input-group"> <!-- Group for input fields -->
+                <label for="userName">Name:</label> <!-- Label for name input -->
+                <input type="text" id="userName" required> <!-- Input field for name -->
             </div>
             
-            <div class="input-group">
-                <label for="userEmail">Email:</label>
-                <input type="email" id="userEmail" required>
+            <!-- Email input group -->
+            <div class="input-group"> <!-- Group for input fields -->
+                <label for="userEmail">Email:</label> <!-- Label for email input -->
+                <input type="email" id="userEmail" required> <!-- Input field for email -->
             </div>
             
-            <button id="startGameBtn" disabled>OK</button>
+            <button id="startGameBtn" disabled>OK</button> <!-- Button to start the game -->
         </div>
     </div>
 
     <!-- GAME CONTAINER -->
-    <div class="game-container">
+    <div class="game-container"> <!-- Main container for the game -->
 
-        <div class="info">
-            <span id="time">0</span> seconds | <span class="moves" id="actions">0</span> moves
+        <!-- Display area for timer and moves -->
+        <div class="info"> <!-- Information about time and moves -->
+            <span id="time">0</span> seconds | <span class="moves" id="actions">0</span> moves <!-- Displaying time and moves -->
         </div>
 
-        <div class="board-container">
-            <div class="sideboard top-left" id="sideboard-left"></div>
+        <!-- Main board-container holding both sideboards and main board -->
+        <div class="board-container"> <!-- Container for the game board -->
+            <!-- Sideboard for shuffled cards (top or left based on screen size) -->
+            <div class="sideboard top-left" id="sideboard-left"></div> <!-- Sideboard for shuffled cards -->
 
-            <div class="board" id="main-board"></div>
+            <!-- Main board for arranging cards -->
+            <div class="board" id="main-board"></div> <!-- Main board for arranging cards -->
 
-            <div class="sideboard bottom-right" id="sideboard-right"></div>
+            <!-- Sideboard for shuffled cards (bottom or right based on screen size) -->
+            <div class="sideboard bottom-right" id="sideboard-right"></div> <!-- Sideboard for shuffled cards -->
         </div>
 
     </div>
 
     <!-- Winning message modal -->
-    <div class="winning-modal" id="winningModal">
-        <div class="content-holder">
-            <div class="header-info">
-                <h2>Win a Vacation to Dream Land!</h2>
-                <p>Complete the puzzle faster than others and win a free trip for 2.</p>
-                <small>Copyright 2022. Interactive Content Builders. All rights reserved</small>
+    <div class="winning-modal" id="winningModal"> <!-- Modal for winning message -->
+        <div class="content-holder"> <!-- Holder for the content -->
+            <div class="header-info"> <!-- Header information -->
+                <h2>Win a Vacation to Dream Land!</h2> <!-- Winning message -->
+                <p>Complete the puzzle faster than others and win a free trip for 2.</p> <!-- Additional information -->
+                <small>Copyright 2022. Interactive Content Builders. All rights reserved</small> <!-- Copyright information -->
             </div>
 
-            <div class="image-holder"></div>
+            <div class="image-holder"></div> <!-- Holder for the image -->
 
-            <div class="winning-message">
-                <div class="winning-header">
-                    <span class="yourResultsText">Your result: </span><span id="winningTime">10:35.04</span>
+            <div class="winning-message"> <!-- Winning message -->
+                <div class="winning-header"> <!-- Header for the winning message -->
+                    <span class="yourResultsText">Your result: </span><span id="winningTime">10:35.04</span> <!-- Displaying the result -->
                 </div>
-                <h2>Thank you for playing!</h2>
-                <p>You have completed the puzzle.</p>
-                <p>Congratulations! Only time will tell if you’re one of the fastest 3 players.</p>
-                <button id="restartButton">Restart</button>
+                <h2>Thank you for playing!</h2> <!-- Thank you message -->
+                <p>You have completed the puzzle.</p> <!-- Completion message -->
+                <p>Congratulations! Only time will tell if you’re one of the fastest 3 players.</p> <!-- Additional information -->
+                <button id="restartButton">Restart</button> <!-- Button to restart the game -->
             </div>
 
-            <div class="results-holder">
-                <div class="top-results">
-                    <h3>Best Results:</h3>
-                    <div class="result-entry">
-                        <span>1</span> <img src="images/user-circle-o.png" alt="User 1"> <span>Name-1</span>
-                        <span>Timer for user-1</span>
+            <div class="results-holder"> <!-- Holder for the results -->
+                <div class="top-results"> <!-- Top results -->
+                    <h3>Best Results:</h3> <!-- Heading for the best results -->
+                    <div class="result-entry"> <!-- Entry for the result -->
+                        <span>1</span> <img src="images/user-circle-o.png" alt="User 1"> <span>Name-1</span> <!-- Displaying the user and their position -->
+                        <span>Timer for user-1</span> <!-- Displaying the timer for the user -->
                     </div>
+                    <!-- ... Repeat for other users ... -->
                 </div>
 
-                <div class="player-result">
-                    <h3>Your result:</h3>
-                    <div class="result-entry">
-                        <span>Position of the player</span> <img src="images/user-circle-o.png" alt="Player">
-                        <span>Name of the player</span> <span>Timer of the player</span>
+                <div class="player-result"> <!-- Result for the player -->
+                    <h3>Your result:</h3> <!-- Heading for the player's result -->
+                    <div class="result-entry"> <!-- Entry for the result -->
+                        <span>Position of the player</span> <img src="images/user-circle-o.png" alt="Player"> <!-- Displaying the player and their position -->
+                        <span>Name of the player</span> <span>Timer of the player</span> <!-- Displaying the name and timer of the player -->
                     </div>
                 </div>
             </div>
@@ -89,12 +97,18 @@
     </div>
 
     <!-- Restart Modal -->
-    <div class="restart-modal" id="restartModal" style="display: none;">
-        <div class="modal-content">
-            <h2>Restart Game</h2>
-            <p>Would you like to restart with the same email or use a different one?</p>
+    <div class="restart-modal" id="restartModal" style="display: none;"> <!-- Modal for restarting the game -->
+        <div class="modal-content"> <!-- Content of the modal -->
+            <h2>Restart Game</h2> <!-- Heading for the restart game modal -->
+            <p>Would you like to restart with the same email or use a different one?</p> <!-- Instruction for the user -->
             
-            <button id="restartSameEmail">Restart with Same Email</button>
-            <button id="restartDiffEmail">Restart with Different Email</button>
+            <button id="restartSameEmail">Restart with Same Email</button> <!-- Button to restart with the same email -->
+            <button id="restartDiffEmail">Restart with Different Email</button> <!-- Button to restart with a different email -->
         </div>
-</html>
+</div>
+
+
+
+    <script src="script.js"></script> <!-- Linking the JavaScript file -->
+
+</html> <!-- End of the HTML document -->
