@@ -348,8 +348,8 @@ function setupDragAndDrop () {
 
 //This function displays the winning modal when the game is completed
 function showWinningModal () {
-  const gameContainer = document.querySelector('.game-container')
-  gameContainer.style.display = 'none'
+  // const gameContainer = document.querySelector('.game-container')
+  // gameContainer.style.display = 'none'
 
   const winningModal = document.querySelector('.winning-modal')
   winningModal.style.display = 'flex'
@@ -362,8 +362,8 @@ function showWinningModal () {
 //This is for Restarting the game. It's activated when the restart button is clicked on the winnining modal.
 function initializeRestartModal () {
   //Show Game Container
-  const gameContainer = document.querySelector('.game-container')
-  gameContainer.style.display = 'block'
+  // const gameContainer = document.querySelector('.game-container')
+  // gameContainer.style.display = 'flex'
   
   const winningModal = document.querySelector('.winning-modal')
   const restartModal = document.getElementById('restartModal')
