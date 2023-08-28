@@ -4,21 +4,28 @@ let elapsedTime = 0 // Keeps track of the time a player has taken so far
 let userEmailValue = '' // To store the email of the player
 
 document.addEventListener('DOMContentLoaded', function () {
-  // Initialize the game
-  resetGame()
-
-  //Enables Drga and Drop
-  setupDragAndDrop()
-
   // Initialize the intro modal
   initializeIntroModal()
 
+  // Initialize the game
+  // resetGame()
+
+  //Enables Drag and Drop
+  // setupDragAndDrop()
+
   // Initialize the restart modal
-  initializeRestartModal()
+  // initializeRestartModal()
+
+  //When the restart button is clicked
+    restartButton.addEventListener('click', function () {
+      // Reload the page
+      window.location.reload();
+    });
+  
 })
 
 //Initialize the intro modal
-function initializeIntroModal () {
+function initializeIntroModal() {
   // Show the intro modal on initial load
   const introModal = document.getElementById('introModal')
   introModal.style.display = 'flex'
@@ -29,18 +36,19 @@ function initializeIntroModal () {
   const startGameBtn = document.getElementById('startGameBtn')
 
   // Function to validate email
-  function validateEmail (email) {
+  function validateEmail(email) {
     const re = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/
     return re.test(email)
   }
 
   // Function to check the form's validity
-  function checkFormValidity () {
+  function checkFormValidity() {
     if (userName.value && validateEmail(userEmail.value)) {
       startGameBtn.disabled = false
     } else {
       startGameBtn.disabled = true
     }
+
   }
 
   // Add event listeners to the input fields
@@ -53,16 +61,19 @@ function initializeIntroModal () {
 
     // Close the intro modal
     introModal.style.display = 'none'
+
+    // Initialize the game
+    resetGame()
   })
 }
 
 //Initialize the Game
-function resetGame () {
+function resetGame() {
   // Shuffle function
-  function shuffle (array) {
+  function shuffle(array) {
     for (let i = array.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1))
-      ;[array[i], array[j]] = [array[j], array[i]]
+        ;[array[i], array[j]] = [array[j], array[i]]
     }
   }
 
@@ -121,7 +132,7 @@ function resetGame () {
 }
 
 //For Starting the timer when the game starts
-function startTimer () {
+function startTimer() {
   if (!timerInterval) {
     timerInterval = setInterval(function () {
       elapsedTime++
@@ -131,7 +142,7 @@ function startTimer () {
 }
 
 /* For outputing the appropriate time format to the Counter*/
-function formatTime (seconds) {
+function formatTime(seconds) {
   const hrs = Math.floor(seconds / 3600)
   const mins = Math.floor((seconds % 3600) / 60)
   const secs = seconds % 60
@@ -149,7 +160,7 @@ function formatTime (seconds) {
 }
 
 /* For outputing the appropriate time format of the player to be submitted to the backend through POST*/
-function formatTimePlayerScore (seconds) {
+function formatTimePlayerScore(seconds) {
   const hrs = Math.floor(seconds / 3600)
   const mins = Math.floor((seconds % 3600) / 60)
   const secs = seconds % 60
@@ -165,7 +176,7 @@ function formatTimePlayerScore (seconds) {
 }
 
 /*For outputing the appropriate time format to the Winning modal*/
-function formatTimeForModal (seconds) {
+function formatTimeForModal(seconds) {
   const hrs = Math.floor(seconds / 3600)
   const mins = Math.floor((seconds % 3600) / 60)
   const secs = seconds % 60
@@ -181,19 +192,19 @@ function formatTimeForModal (seconds) {
 }
 
 //For stopping the timer when the game has ended successfully
-function stopTimer () {
+function stopTimer() {
   clearInterval(timerInterval)
   timerInterval = null
 }
 
 //For updating the move counts
-function updateMoveCount () {
+function updateMoveCount() {
   const moveCounter = document.querySelector('.moves')
   moveCounter.textContent = moveCount
 }
 
 // Checks if all the cards have been placed correctly on the board
-function checkGameCompletion () {
+function checkGameCompletion() {
   const mainBoardCards = document.querySelectorAll('#main-board .card')
   if (mainBoardCards.length === 16) {
     let isCorrectOrder = true
@@ -216,7 +227,7 @@ function checkGameCompletion () {
 }
 
 //Sets up the drag and drop functionality on devices that support touch devices, and those that use a mouse
-function setupDragAndDrop () {
+function setupDragAndDrop() {
   const cards = document.querySelectorAll('.card')
   const placeholders = document.querySelectorAll('.placeholder')
 
@@ -347,9 +358,9 @@ function setupDragAndDrop () {
 }
 
 //This function displays the winning modal when the game is completed
-function showWinningModal () {
-  // const gameContainer = document.querySelector('.game-container')
-  // gameContainer.style.display = 'none'
+function showWinningModal() {
+  const gameContainer = document.querySelector('.game-container')
+  gameContainer.style.display = 'none'
 
   const winningModal = document.querySelector('.winning-modal')
   winningModal.style.display = 'flex'
@@ -357,14 +368,16 @@ function showWinningModal () {
   document.getElementById(
     'winningTime'
   ).innerHTML = `<span class="HoursMins">${formattedTime.hourMin}</span><span class="smaller-seconds">${formattedTime.seconds}</span>`
+
+  // initializeRestartModal();
 }
 
 //This is for Restarting the game. It's activated when the restart button is clicked on the winnining modal.
-function initializeRestartModal () {
+function initializeRestartModal() {
   //Show Game Container
-  // const gameContainer = document.querySelector('.game-container')
+  const gameContainer = document.querySelector('.game-container')
   // gameContainer.style.display = 'flex'
-  
+
   const winningModal = document.querySelector('.winning-modal')
   const restartModal = document.getElementById('restartModal')
   const sameEmailBtn = document.getElementById('restartSameEmail')
@@ -376,23 +389,29 @@ function initializeRestartModal () {
       winningModal.style.display = 'none' // Hide the Win modal
 
       restartModal.style.display = 'flex' // Show the restart modal
+
+      //Show Game Container
+      gameContainer.style.display = 'flex'
     })
 
   sameEmailBtn.addEventListener('click', function () {
     restartModal.style.display = 'none' // Hide the restart modal
     resetGame()
-    console.log(userEmailValue) // Checking whether the user email is actually saved. This isjust for debugging purposes
+    console.log(userEmailValue) // Checking whether the user email is actually saved. This is just for debugging purposes
   })
 
   diffEmailBtn.addEventListener('click', function () {
     restartModal.style.display = 'none' // Hide the restart modal
-    resetGame()
-    document.getElementById('introModal').style.display = 'flex' // Show the intro modal to get new details
+    // resetGame()
+    // document.getElementById('introModal').style.display = 'flex' // Show the intro modal to get new details
+
+    // Initialize the intro modal
+    initializeIntroModal()
   })
 }
 
 /*Function to send player's data to the backend through POST and receive back a response*/
-function savePlayerScore (name, email, time) {
+function savePlayerScore(name, email, time) {
   const endpoint = 'https://puzzle-game.crownzcom.workers.dev/' // Replace with your Cloudflare Worker's URL
   const data = {
     name: name,
@@ -402,15 +421,15 @@ function savePlayerScore (name, email, time) {
 
 
   // Get the results table
-const resultsTable = document.querySelector('.results-table');
+  const resultsTable = document.querySelector('.results-table');
 
-// Append the spinner to the results table
-resultsTable.appendChild(document.getElementById('spinner'));
+  // Append the spinner to the results table
+  resultsTable.appendChild(document.getElementById('spinner'));
 
-// Show the spinner
-document.getElementById('spinner').style.display = 'block';
+  // Show the spinner
+  document.getElementById('spinner').style.display = 'block';
 
-fetch(endpoint, {
+  fetch(endpoint, {
     method: 'POST',
     body: JSON.stringify(data),
     headers: {
@@ -420,7 +439,7 @@ fetch(endpoint, {
     .then(response => response.json())
     .then(data => {
       // Remove the spinner
-    document.getElementById('spinner').remove();
+      document.getElementById('spinner').remove();
       if (data.status === 'success') {
         console.log('Score saved successfully!')
 
@@ -458,7 +477,7 @@ function displayTopScores(scores) {
   scores.forEach(score => {
     const entry = document.createElement('tr');
     entry.className = 'result-entry';
-      
+
     // Check if the current top player's email matches the player's email
     if (score.email === userEmailValue) {
       entry.classList.add('highlighted-player');
