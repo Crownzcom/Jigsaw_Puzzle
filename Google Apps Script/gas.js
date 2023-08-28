@@ -55,6 +55,7 @@ function fetchTop5() {
         return {
             position: index + 1,
             name: row[0],
+            email: row[1], // Return email for each top player
             scores: secondsToTime(row[2])
         };
     });

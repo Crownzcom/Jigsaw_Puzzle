@@ -2,7 +2,7 @@ addEventListener("fetch", (event) => {
     event.respondWith(handleRequest(event.request));
   });
   
-  const GAS_URL = "ENTER_GOOGLE_APPS_SCRIPT_URL";
+  const GAS_URL = "GAS_URL";
   
   async function handleRequest(request) {
     if (request.method === "OPTIONS") {
