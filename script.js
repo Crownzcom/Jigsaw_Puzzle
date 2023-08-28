@@ -23,6 +23,7 @@ function initializeIntroModal () {
   const introModal = document.getElementById('introModal')
   introModal.style.display = 'flex'
 
+
   const userName = document.getElementById('userName')
   const userEmail = document.getElementById('userEmail')
   const startGameBtn = document.getElementById('startGameBtn')
@@ -195,15 +196,22 @@ function updateMoveCount () {
 function checkGameCompletion () {
   const mainBoardCards = document.querySelectorAll('#main-board .card')
   if (mainBoardCards.length === 16) {
-    stopTimer()
-    const userName = document.getElementById('userName').value
-    const userEmail = document.getElementById('userEmail').value
-
-    const userScore = formatTimePlayerScore(elapsedTime)
-    console.log('User score time with  formatTimePlayerScore(): ' + userScore)
-
-    savePlayerScore(userName, userEmail, userScore)
-    showWinningModal()
+    let isCorrectOrder = true
+    mainBoardCards.forEach((card, index) => {
+      // Convert the data-id attribute to a number before comparing
+      if (Number(card.getAttribute('data-id')) !== index + 1) {
+        isCorrectOrder = false
+      }
+    })
+    if (isCorrectOrder) {
+      stopTimer()
+      const userName = document.getElementById('userName').value
+      const userEmail = document.getElementById('userEmail').value
+      const userScore = formatTimePlayerScore(elapsedTime)
+      console.log('User score time with  formatTimePlayerScore(): ' + userScore)
+      savePlayerScore(userName, userEmail, userScore)
+      showWinningModal()
+    }
   }
 }
 
@@ -254,6 +262,13 @@ function setupDragAndDrop () {
       e.preventDefault()
       const cardId = e.dataTransfer.getData('text/plain')
       const card = document.querySelector(`.card[data-id="${cardId}"]`)
+
+      // Check if the card is being dropped on the correct placeholder
+      if (Number(card.getAttribute('data-id')) === Number(placeholder.getAttribute('data-id'))) {
+        console.log('Card dropped on the correct placeholder')
+      } else {
+        console.log('Card dropped on the wrong placeholder')
+      }
 
       if (!this.querySelector('.card')) {
         this.appendChild(card)
@@ -315,19 +330,27 @@ function setupDragAndDrop () {
         dropTarget.appendChild(draggedCard)
         moveCount++
         updateMoveCount()
-      } else if (draggedCard.getAttribute('previous-parent-id')) {
-        const previousParent = document.getElementById(
-          draggedCard.getAttribute('previous-parent-id')
-        )
-        previousParent.appendChild(draggedCard)
+
+        // Check if the card is being dropped on the correct placeholder
+        if (Number(draggedCard.getAttribute('data-id')) === Number(dropTarget.getAttribute('data-id'))) {
+          console.log('Card dropped on the correct placeholder')
+        } else {
+          console.log('Card dropped on the wrong placeholder')
+        }
+
+        checkGameCompletion()
+      } else if (draggedCard.parentElement) {
+        draggedCard.parentElement.appendChild(draggedCard)
       }
-      checkGameCompletion()
     })
   })
 }
 
 //This function displays the winning modal when the game is completed
 function showWinningModal () {
+  const gameContainer = document.querySelector('.game-container')
+  gameContainer.style.display = 'none'
+
   const winningModal = document.querySelector('.winning-modal')
   winningModal.style.display = 'flex'
   const formattedTime = formatTimeForModal(elapsedTime)
@@ -338,6 +361,10 @@ function showWinningModal () {
 
 //This is for Restarting the game. It's activated when the restart button is clicked on the winnining modal.
 function initializeRestartModal () {
+  //Show Game Container
+  const gameContainer = document.querySelector('.game-container')
+  gameContainer.style.display = 'block'
+  
   const winningModal = document.querySelector('.winning-modal')
   const restartModal = document.getElementById('restartModal')
   const sameEmailBtn = document.getElementById('restartSameEmail')
@@ -373,7 +400,17 @@ function savePlayerScore (name, email, time) {
     scores: time
   }
 
-  fetch(endpoint, {
+
+  // Get the results table
+const resultsTable = document.querySelector('.results-table');
+
+// Append the spinner to the results table
+resultsTable.appendChild(document.getElementById('spinner'));
+
+// Show the spinner
+document.getElementById('spinner').style.display = 'block';
+
+fetch(endpoint, {
     method: 'POST',
     body: JSON.stringify(data),
     headers: {
@@ -382,6 +419,8 @@ function savePlayerScore (name, email, time) {
   })
     .then(response => response.json())
     .then(data => {
+      // Remove the spinner
+    document.getElementById('spinner').remove();
       if (data.status === 'success') {
         console.log('Score saved successfully!')
 
@@ -390,16 +429,13 @@ function savePlayerScore (name, email, time) {
 
         if (data.playerPosition > 5) {
           //Display Player's Position
-          const playerResultSection = document.querySelector(
-            '.player-result .result-entry'
-          )
-          console.log(data.playerPosition) //Display the player's position
-          playerResultSection.querySelector('span:nth-child(1)').textContent =
-            data.playerPosition // Set the player's position
-          playerResultSection.querySelector('span:nth-child(3)').textContent =
-            name // Set the player's name
-          playerResultSection.querySelector('span:nth-child(4)').textContent =
-            time // Set the player's timer
+          const playerResultEntry = document.querySelector('.player-result .result-entry');
+          playerResultEntry.innerHTML = `
+            <td><span>${data.playerPosition}</span></td>
+            <td><img src="images/user-circle-o.png" alt="Player"></td>
+            <td><span>${name}</span></td>
+            <td><span>${time}</span></td>
+          `;
         } else {
           const playerResultSection = document.querySelector('.player-result')
           playerResultSection.style.display = 'none' // Hide the Player Results Section
@@ -413,32 +449,6 @@ function savePlayerScore (name, email, time) {
     })
 }
 
-/* Function to display top 5 players*/
-// function displayTopScores(scores) {
-//   const topResultsDiv = document.querySelector('.top-results');
-//   // Clear previous results
-//   const existingEntries = topResultsDiv.querySelectorAll('.result-entry');
-//   existingEntries.forEach(entry => entry.remove());
-
-//   scores.forEach(score => {
-//       const entry = document.createElement('div');
-//       entry.className = 'result-entry';
-      
-//       // Check if the current top player's email matches the player's email
-//       if (score.email === userEmailValue) {
-//           entry.classList.add('highlighted-player');
-//       }
-
-//       entry.innerHTML = `
-//           <span>${score.position}</span>
-//           <img src="images/user-circle-o.png" alt="User ${score.position}">
-//           <span>${score.name}</span>
-//           <span>${score.scores}</span>
-//       `;
-//       topResultsDiv.appendChild(entry);
-//   });
-// }
-
 function displayTopScores(scores) {
   const topResultsTable = document.querySelector('.results-table tbody');
   // Clear previous results
@@ -446,22 +456,20 @@ function displayTopScores(scores) {
   existingEntries.forEach(entry => entry.remove());
 
   scores.forEach(score => {
-      const entry = document.createElement('tr');
-      entry.className = 'result-entry';
+    const entry = document.createElement('tr');
+    entry.className = 'result-entry';
       
-      // Check if the current top player's email matches the player's email
-      if (score.email === userEmailValue) {
-          entry.classList.add('highlighted-player');
-      }
+    // Check if the current top player's email matches the player's email
+    if (score.email === userEmailValue) {
+      entry.classList.add('highlighted-player');
+    }
 
-      entry.innerHTML = `
-          <td><span>${score.position}</span></td>
-          <td><img src="images/user-circle-o.png" alt="User ${score.position}"></td>
-          <td><span>${score.name}</span></td>
-          <td><span>${score.scores}</span></td>
-      `;
-      topResultsTable.appendChild(entry);
+    entry.innerHTML = `
+      <td><span>${score.position}</span></td>
+      <td><img src="images/user-circle-o.png" alt="User ${score.position}"></td>
+      <td><span>${score.name}</span></td>
+      <td><span>${score.scores}</span></td>
+    `;
+    topResultsTable.appendChild(entry);
   });
 }
-
-

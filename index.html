@@ -36,6 +36,15 @@
     <!-- GAME CONTAINER -->
     <div class="game-container"> <!-- Main container for the game -->
 
+        <div class="head">
+            <div class="header">Win a Vacation to Dream Land!</div>
+            <div class="details">
+                Complete the puzzle faster than others and win a free trip for 2.
+            </div>
+            <div class="copyright">
+                Copyright 2022. Interactive Content Builders. All rights reserved.
+            </div>
+        </div>
         <!-- Display area for timer and moves -->
         <div class="info">
             <div class="moves-info">
@@ -65,10 +74,14 @@
     <!-- Winning message modal -->
     <div class="winning-modal" id="winningModal"> <!-- Modal for winning message -->
         <div class="content-holder"> <!-- Holder for the content -->
-            <div class="header-info"> <!-- Header information -->
-                <h2>Win a Vacation to Dream Land!</h2> <!-- Winning message -->
-                <p>Complete the puzzle faster than others and win a free trip for 2.</p> <!-- Additional information -->
-                <small>Copyright 2022. Interactive Content Builders. All rights reserved</small> <!-- Copyright information -->
+            <div class="head">
+                <div class="header">Win a Vacation to Dream Land!</div>
+                <div class="details">
+                    Complete the puzzle faster than others and win a free trip for 2.
+                </div>
+                <div class="copyright">
+                    Copyright 2022. Interactive Content Builders. All rights reserved.
+                </div>
             </div>
 
             <div class="image-holder"></div> <!-- Holder for the image -->
@@ -86,17 +99,11 @@
             <div class="results-holder"> <!-- Holder for the results -->
                 <div class="top-results"> <!-- Top results -->
                     <h3>Best Results:</h3> <!-- Heading for the best results -->
-                    <!--<div class="result-entry"> -->
-                        <!--<span>1</span> <img src="images/user-circle-o.png" alt="User 1"> <span>Name-1</span> -->
-                        <!--<span>Timer for user-1</span> -->
-                    <!-- </div> -->
                     <table class="results-table">
                         <tbody>
                             <tr class="result-entry">
-                                <td><span>1</span></td>
-                                <td><img src="images/user-circle-o.png" alt="User 1"></td>
-                                <td><span>Name-1</span></td>
-                                <td><span>Timer for user-1</span></td>
+                                <!-- 5 Best results Dynamically Populated -->
+                                <div class="spinner" id="spinner"></div>
                             </tr>
                             <!-- ... Repeat for other users ... -->
                         </tbody>
@@ -105,13 +112,16 @@
                     <!-- ... Repeat for other users ... -->
                 </div>
 
-                <div class="player-result"> <!-- Result for the player -->
-                    <h3>Your result:</h3> <!-- Heading for the player's result -->
-                    <div class="result-entry"> <!-- Entry for the result -->
-                        <span>Position of the player</span> <img src="images/user-circle-o.png" alt="Player"> <!-- Displaying the player and their position -->
-                        <span>Name of the player</span> <span>Timer of the player</span> <!-- Displaying the name and timer of the player -->
-                    </div>
-                </div>
+                <div class="player-result">
+                    <h3>Your result:</h3>
+                    <table class="results-table">
+                      <tbody>
+                        <tr class="result-entry">
+                          <!-- Players Results Dynamically Populated -->
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
             </div>
         </div>
     </div>
