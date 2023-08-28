@@ -393,7 +393,7 @@ function initializeRestartModal () {
 
 /*Function to send player's data to the backend through POST and receive back a response*/
 function savePlayerScore (name, email, time) {
-  const endpoint = 'https://puzzle-game.derrickmal123.workers.dev/' // Replace with your Cloudflare Worker's URL
+  const endpoint = 'https://puzzle-game.crownzcom.workers.dev/' // Replace with your Cloudflare Worker's URL
   const data = {
     name: name,
     email: email,
