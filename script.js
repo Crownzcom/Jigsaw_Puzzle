@@ -424,10 +424,11 @@ function savePlayerScore(name, email, time) {
   const resultsTable = document.querySelector('.results-table');
 
   // Append the spinner to the results table
-  resultsTable.appendChild(document.getElementById('spinner'));
+  // resultsTable.appendChild(document.getElementById('spinner'));
 
   // Show the spinner
-  document.getElementById('spinner').style.display = 'block';
+  // document.getElementById('spinner').style.display = 'block';
+  resultsTable.appendChild(document.getElementById('ellipsis'));
 
   fetch(endpoint, {
     method: 'POST',
@@ -439,7 +440,9 @@ function savePlayerScore(name, email, time) {
     .then(response => response.json())
     .then(data => {
       // Remove the spinner
-      document.getElementById('spinner').remove();
+      // document.getElementById('spinner').remove();
+      document.getElementById('ellipsis').remove();
+      
       if (data.status === 'success') {
         console.log('Score saved successfully!')
 

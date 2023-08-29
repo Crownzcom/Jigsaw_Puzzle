@@ -45,6 +45,7 @@
                 Copyright 2022. Interactive Content Builders. All rights reserved.
             </div>
         </div>
+        
         <!-- Display area for timer and moves -->
         <div class="info">
             <div class="moves-info">
@@ -100,9 +101,15 @@
                 <div class="top-results"> <!-- Top results -->
                     <h3>Best Results:</h3> <!-- Heading for the best results -->
                     <table class="results-table">
+                        <div class="ellipsis-loader" id="ellipsis">
+                            <div></div>
+                            <div></div>
+                            <div></div>
+                        </div>
                         <tbody>
                             <tr class="result-entry">
                                 <!-- 5 Best results Dynamically Populated -->
+                                
                                 <div class="spinner" id="spinner"></div>
                             </tr>
                             <!-- ... Repeat for other users ... -->

@@ -56,6 +56,10 @@ body {
     box-sizing: border-box; /* This makes sure padding and border are included in the element's total width and height */
 }
 
+.input-group input:focus {
+    border-color: rgb(255, 220, 22) !important;
+}
+
 .modal-content button {
     padding: 10px 20px;
     border: none;
@@ -445,10 +449,6 @@ body {
     text-align: left;
 }
 
-/* .result-entry span:nth-child(1) {   
-    flex: 1;
-} */
-
 .result-entry img {  
     width: 40px;
     height: 40px;
@@ -535,14 +535,60 @@ body {
     flex: 1;
   }
   .spinner {
-    border: 16px solid #f3f3f3;
-    border-top: 16px solid #3498db;
+    border: 15px solid #f3f3f3;
+    border-top: 15px solid rgb(236, 162, 29);
     border-radius: 50%;
-    width: 120px;
-    height: 120px;
-    animation: spin 2s linear infinite;
+    width: 100px;
+    height: 100px;
+    animation: spin 1.5s linear infinite;
     display: none;
+    position: relative;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
   }
+
+  /* ellipsis loading animation */
+  .ellipsis-loader {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%; /* or any other value based on where you want to display it */
+}
+
+.ellipsis-loader > div {
+    
+    width: 35px;
+    height: 35px;
+    margin: 0 5px;
+    background-color: rgb(21, 175, 202); /* Same color as your spinner */
+    border-radius: 50%; /* Makes it a circle */
+    animation: ellipsisFade 1.2s infinite;
+    justify-content: center;
+    align-items: center;
+    margin-top: 10px; /* Added space on top */
+}
+
+.ellipsis-loader > div:nth-child(1) {
+    animation-delay: 0s;
+}
+
+.ellipsis-loader > div:nth-child(2) {
+    animation-delay: 0.4s;
+}
+
+.ellipsis-loader > div:nth-child(3) {
+    animation-delay: 0.8s;
+}
+
+
+/*  */
+@keyframes ellipsisFade {
+    0% { opacity: 0.2; }
+    50% { opacity: 1; }
+    100% { opacity: 0.2; }
+}
+
   
   @keyframes spin {
     0% { transform: rotate(0deg); }
