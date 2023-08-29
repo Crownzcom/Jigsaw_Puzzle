@@ -26,6 +26,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
 //Initialize the intro modal
 function initializeIntroModal() {
+  // Initialize the game
+  resetGame()
+  
   // Show the intro modal on initial load
   const introModal = document.getElementById('introModal')
   introModal.style.display = 'flex'
@@ -61,9 +64,6 @@ function initializeIntroModal() {
 
     // Close the intro modal
     introModal.style.display = 'none'
-
-    // Initialize the game
-    resetGame()
   })
 }
 

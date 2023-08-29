@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Making the webpage responsive -->
     <title>Puzzle Game</title> <!-- Title of the webpage -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
     <link rel="stylesheet" href="styles.css"> <!-- Linking the CSS file -->
 </head>
 
@@ -14,12 +15,12 @@
     <!-- Intro Modal -->
     <div class="intro-modal" id="introModal"> <!-- Modal for introduction -->
         <div class="modal-content"> <!-- Content of the modal -->
-            <h2>Welcome to the Puzzle Game!</h2> <!-- Welcome message -->
-            <p>Please enter your details to start:</p> <!-- Instruction for the user -->
+            <h2>Sign in to play</h2> <!-- Welcome message -->
+            <p></p> <!-- Instruction for the user -->
             
             <!-- Name input group -->
             <div class="input-group"> <!-- Group for input fields -->
-                <label for="userName">Name:</label> <!-- Label for name input -->
+                <label for="userName">Nickname:</label> <!-- Label for name input -->
                 <input type="text" id="userName" required> <!-- Input field for name -->
             </div>
             
@@ -29,7 +30,7 @@
                 <input type="email" id="userEmail" required> <!-- Input field for email -->
             </div>
             
-            <button id="startGameBtn" disabled>OK</button> <!-- Button to start the game -->
+            <button id="startGameBtn" disabled>Ok!</button> <!-- Button to start the game -->
         </div>
     </div>
 
@@ -54,6 +55,7 @@
             </div>
             <div class="time-info">
                 <i class="fas fa-stopwatch"></i>
+                <i class="fa-light fa-stopwatch"></i>
                 <span class="label">:</span>
                 <span id="time">0</span>
             </div>
