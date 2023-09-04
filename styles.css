@@ -684,19 +684,19 @@ body {
       }
 
     .board {
-        margin: 20px 0;
+        margin: 0px 0;
     }
 
     .board {
-        grid-template-columns: repeat(4, 60px);
+        grid-template-columns: repeat(4, 50px);
     }
     .sideboard {
-        grid-template-rows: repeat(2, 60px);
+        grid-template-rows: repeat(2, 50px);
         align-content: center;
     }
     .card, .placeholder {
-        width: 60px;
-        height: 60px;
+        width: 50px;
+        height: 50px;
         
     }
 }
