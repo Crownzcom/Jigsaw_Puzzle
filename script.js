@@ -317,9 +317,12 @@ function setupDragAndDrop() {
     card.addEventListener('touchmove', function (e) {
       e.preventDefault() // Prevent the default touch behavior
       let touchLocation = e.targetTouches[0]
-      card.style.top = touchLocation.pageY - 50 + 'px'
-      card.style.left = touchLocation.pageX - 50 + 'px'
-      card.style.position = 'fixed'
+      
+      requestAnimationFrame(() => {
+        card.style.top = touchLocation.pageY - 50 + 'px'
+        card.style.left = touchLocation.pageX - 50 + 'px'
+        card.style.position = 'fixed'
+      })
     })
 
     card.addEventListener('touchend', function (e) {
