@@ -6,7 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Making the webpage responsive -->
     <title>Puzzle Game</title> <!-- Title of the webpage -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css"
+        integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
     <link rel="stylesheet" href="styles.css"> <!-- Linking the CSS file -->
 </head>
 
@@ -17,19 +18,19 @@
         <div class="modal-content"> <!-- Content of the modal -->
             <h2>Sign in to play</h2> <!-- Welcome message -->
             <p></p> <!-- Instruction for the user -->
-            
+
             <!-- Name input group -->
             <div class="input-group"> <!-- Group for input fields -->
                 <label for="userName">Nickname:</label> <!-- Label for name input -->
                 <input type="text" id="userName" required> <!-- Input field for name -->
             </div>
-            
+
             <!-- Email input group -->
             <div class="input-group"> <!-- Group for input fields -->
                 <label for="userEmail">Email:</label> <!-- Label for email input -->
                 <input type="email" id="userEmail" required> <!-- Input field for email -->
             </div>
-            
+
             <button id="startGameBtn" disabled>Ok!</button> <!-- Button to start the game -->
         </div>
     </div>
@@ -46,7 +47,7 @@
                 Copyright 2022. Interactive Content Builders. All rights reserved.
             </div>
         </div>
-        
+
         <!-- Display area for timer and moves -->
         <div class="info">
             <div class="moves-info">
@@ -90,11 +91,13 @@
 
             <div class="winning-message"> <!-- Winning message -->
                 <div class="winning-header"> <!-- Header for the winning message -->
-                    <span class="yourResultsText">Your result: </span><span id="winningTime">10:35.04</span> <!-- Displaying the result -->
+                    <span class="yourResultsText">Your result: </span><span id="winningTime">10:35.04</span>
+                    <!-- Displaying the result -->
                 </div>
                 <h2>Thank you for playing!</h2> <!-- Thank you message -->
                 <p>You have completed the puzzle.</p> <!-- Completion message -->
-                <p>Congratulations! Only time will tell if you’re one of the fastest 3 players.</p> <!-- Additional information -->
+                <p>Congratulations! Only time will tell if you’re one of the fastest 3 players.</p>
+                <!-- Additional information -->
                 <button id="restartButton">Restart</button> <!-- Button to restart the game -->
             </div>
 
@@ -110,26 +113,26 @@
                         <tbody>
                             <tr class="result-entry">
                                 <!-- 5 Best results Dynamically Populated -->
-                                
+
                                 <div class="spinner" id="spinner"></div>
                             </tr>
                             <!-- ... Repeat for other users ... -->
                         </tbody>
                     </table>
-                    
+
                     <!-- ... Repeat for other users ... -->
                 </div>
 
                 <div class="player-result">
                     <h3>Your result:</h3>
                     <table class="results-table">
-                      <tbody>
-                        <tr class="result-entry">
-                          <!-- Players Results Dynamically Populated -->
-                        </tr>
-                      </tbody>
+                        <tbody>
+                            <tr class="result-entry">
+                                <!-- Players Results Dynamically Populated -->
+                            </tr>
+                        </tbody>
                     </table>
-                  </div>
+                </div>
             </div>
         </div>
     </div>
@@ -138,15 +141,27 @@
     <div class="restart-modal" id="restartModal" style="display: none;"> <!-- Modal for restarting the game -->
         <div class="modal-content"> <!-- Content of the modal -->
             <h2>Restart Game</h2> <!-- Heading for the restart game modal -->
-            <p>Would you like to restart with the same email or use a different one?</p> <!-- Instruction for the user -->
-            
-            <button id="restartSameEmail">Restart with Same Email</button> <!-- Button to restart with the same email -->
-            <button id="restartDiffEmail">Restart with Different Email</button> <!-- Button to restart with a different email -->
+            <p>Would you like to restart with the same email or use a different one?</p>
+            <!-- Instruction for the user -->
+
+            <button id="restartSameEmail">Restart with Same Email</button>
+            <!-- Button to restart with the same email -->
+            <button id="restartDiffEmail">Restart with Different Email</button>
+            <!-- Button to restart with a different email -->
         </div>
-</div>
-
-
-
-    <script src="script.js"></script> <!-- Linking the JavaScript file -->
+    </div>
+</body>
+<script src="script.js"></script> <!-- Linking the JavaScript file -->
+<script>
+    document.querySelectorAll('iframe').forEach(iframe => {
+        iframe.onload = function() {
+            if (window.innerWidth < 600) {
+                iframe.contentWindow.postMessage('hideContent', '*');
+            } else {
+                iframe.contentWindow.postMessage('showContent', '*');
+            }
+        }
+    });           
+</script>
 
 </html> <!-- End of the HTML document -->

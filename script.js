@@ -7,15 +7,6 @@ document.addEventListener('DOMContentLoaded', function () {
   // Initialize the intro modal
   initializeIntroModal()
 
-  // Initialize the game
-  // resetGame()
-
-  //Enables Drag and Drop
-  // setupDragAndDrop()
-
-  // Initialize the restart modal
-  // initializeRestartModal()
-
   //When the restart button is clicked
     restartButton.addEventListener('click', function () {
       // Reload the page
@@ -24,7 +15,7 @@ document.addEventListener('DOMContentLoaded', function () {
   
 })
 
-//Initialize the intro modal
+//Function to Initialize the intro modal
 function initializeIntroModal() {
   // Initialize the game
   resetGame()
@@ -67,7 +58,7 @@ function initializeIntroModal() {
   })
 }
 
-//Initialize the Game
+//Function to Initialize the Game
 function resetGame() {
   // Shuffle function
   function shuffle(array) {
@@ -131,7 +122,7 @@ function resetGame() {
   stopTimer() // Ensure timer is stopped
 }
 
-//For Starting the timer when the game starts
+//Function to Start the timer when the game starts
 function startTimer() {
   if (!timerInterval) {
     timerInterval = setInterval(function () {
@@ -141,7 +132,7 @@ function startTimer() {
   }
 }
 
-/* For outputing the appropriate time format to the Counter*/
+/* Function to output the appropriate time format to the Counter*/
 function formatTime(seconds) {
   const hrs = Math.floor(seconds / 3600)
   const mins = Math.floor((seconds % 3600) / 60)
@@ -159,7 +150,7 @@ function formatTime(seconds) {
   return timeString
 }
 
-/* For outputing the appropriate time format of the player to be submitted to the backend through POST*/
+/* Function to output the appropriate time format of the player to be submitted to the backend through POST*/
 function formatTimePlayerScore(seconds) {
   const hrs = Math.floor(seconds / 3600)
   const mins = Math.floor((seconds % 3600) / 60)
@@ -175,7 +166,7 @@ function formatTimePlayerScore(seconds) {
   return timeString
 }
 
-/*For outputing the appropriate time format to the Winning modal*/
+/*Function to output the appropriate time format to the Winning modal*/
 function formatTimeForModal(seconds) {
   const hrs = Math.floor(seconds / 3600)
   const mins = Math.floor((seconds % 3600) / 60)
@@ -191,19 +182,19 @@ function formatTimeForModal(seconds) {
   }
 }
 
-//For stopping the timer when the game has ended successfully
+//Function to stop the timer when the game has ended successfully
 function stopTimer() {
   clearInterval(timerInterval)
   timerInterval = null
 }
 
-//For updating the move counts
+//Function to update the move counts
 function updateMoveCount() {
   const moveCounter = document.querySelector('.moves')
   moveCounter.textContent = moveCount
 }
 
-// Checks if all the cards have been placed correctly on the board
+// Function to Check if all the cards have been placed correctly on the board
 function checkGameCompletion() {
   const mainBoardCards = document.querySelectorAll('#main-board .card')
   if (mainBoardCards.length === 16) {
@@ -226,7 +217,7 @@ function checkGameCompletion() {
   }
 }
 
-//Sets up the drag and drop functionality on devices that support touch devices, and those that use a mouse
+//Function to Set up the drag and drop functionality on devices that support touch devices, and those that use a mouse
 function setupDragAndDrop() {
   const cards = document.querySelectorAll('.card')
   const placeholders = document.querySelectorAll('.placeholder')
@@ -360,7 +351,7 @@ function setupDragAndDrop() {
   })
 }
 
-//This function displays the winning modal when the game is completed
+//Function to display the winning modal when the game is completed
 function showWinningModal() {
   const gameContainer = document.querySelector('.game-container')
   gameContainer.style.display = 'none'
@@ -371,15 +362,12 @@ function showWinningModal() {
   document.getElementById(
     'winningTime'
   ).innerHTML = `<span class="HoursMins">${formattedTime.hourMin}</span><span class="smaller-seconds">${formattedTime.seconds}</span>`
-
-  // initializeRestartModal();
 }
 
-//This is for Restarting the game. It's activated when the restart button is clicked on the winnining modal.
+//Function to Restart the game. It's activated when the restart button is clicked on the winnining modal.
 function initializeRestartModal() {
   //Show Game Container
   const gameContainer = document.querySelector('.game-container')
-  // gameContainer.style.display = 'flex'
 
   const winningModal = document.querySelector('.winning-modal')
   const restartModal = document.getElementById('restartModal')
@@ -405,8 +393,6 @@ function initializeRestartModal() {
 
   diffEmailBtn.addEventListener('click', function () {
     restartModal.style.display = 'none' // Hide the restart modal
-    // resetGame()
-    // document.getElementById('introModal').style.display = 'flex' // Show the intro modal to get new details
 
     // Initialize the intro modal
     initializeIntroModal()
@@ -426,11 +412,6 @@ function savePlayerScore(name, email, time) {
   // Get the results table
   const resultsTable = document.querySelector('.results-table');
 
-  // Append the spinner to the results table
-  // resultsTable.appendChild(document.getElementById('spinner'));
-
-  // Show the spinner
-  // document.getElementById('spinner').style.display = 'block';
   resultsTable.appendChild(document.getElementById('ellipsis'));
 
   fetch(endpoint, {
@@ -442,8 +423,7 @@ function savePlayerScore(name, email, time) {
   })
     .then(response => response.json())
     .then(data => {
-      // Remove the spinner
-      // document.getElementById('spinner').remove();
+      // Remove the ellipsis
       document.getElementById('ellipsis').remove();
       
       if (data.status === 'success') {
@@ -474,6 +454,7 @@ function savePlayerScore(name, email, time) {
     })
 }
 
+//Function to to display the player results/scores 
 function displayTopScores(scores) {
   const topResultsTable = document.querySelector('.results-table tbody');
   // Clear previous results
