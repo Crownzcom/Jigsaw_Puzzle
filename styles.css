@@ -644,7 +644,8 @@ body {
 }
 
 /* Portrait Layout */
-@media screen and (max-width: 599px) {
+/* @media screen and (max-width: 599px) { */
+@media screen and (max-width: 767px) {
     .head {
         width: 109%;
         margin-left: -1.7%;
